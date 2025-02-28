@@ -186,6 +186,38 @@ def generate_content(selected_sections, company_name, company_type, company_desc
                 }
             }"""
         )
+    
+    if "footer" in selected_sections:
+        content_dict["footer"] = Task(
+            description=f"Generate a JSON formatted response containing a footer for {company_name}.",
+            agent=Agent(
+                llm=llm,
+                role="UX Designer",
+                goal=f"Design a concise footer for {company_name} ({company_type}) with a {tone_of_voice} tone.",
+                backstory="Expert in UX/UI design, specializing in minimal and effective navigation menus.",
+                verbose=False,
+                allow_deviation=False,
+                rules=[
+                    "ONLY 4 LINKS MUST BE GENERATED.",
+                    "Strictly return only a JSON object.",
+                    "Only provide response as per format",
+                    "Do not include any additional descriptions, explanations, or context.",
+                    "The output must be concise and in proper JSON format.",
+                    "Do not include the 'icon' field in the response."
+                ]
+            ),
+            expected_output=f"""{{
+                "footer": {{
+                    "Company name": "{company_name}",
+                    "Links": [
+                        {{"label": "Home"}},
+                        {{"label": "Products", "dropdown": ["Electronics", "Clothing", "Books", "Home & Garden"]}},
+                        {{"label": "Services", "dropdown": ["Web Development", "Marketing", "Consulting"]}},
+                        {{"label": "About Us"}}
+                    ]
+                }}
+            }}"""
+        )
 
 
 
@@ -227,8 +259,9 @@ if __name__ == "__main__":
     print("4. Features Section")
     print("5. Testimonial Section")
     print("6. About US Section")
+    print("7. Footer Section")
 
-    section_choices = input("\nEnter the numbers corresponding to your choices (e.g., 1,2,3,4,5,6): ").strip()
+    section_choices = input("\nEnter the numbers corresponding to your choices (e.g., 1,2,3,4,5,6,7): ").strip()
     selected_sections = []
 
     if "1" in section_choices:
@@ -243,6 +276,8 @@ if __name__ == "__main__":
         selected_sections.append("testimonials")
     if "6" in section_choices:
         selected_sections.append("about_us")
+    if "7" in section_choices:
+        selected_sections.append("footer")
     
 
     if not selected_sections:
