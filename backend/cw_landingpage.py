@@ -262,14 +262,15 @@ if __name__ == "__main__":
         for key, task_output in output_texts.items():
             if hasattr(task_output, "raw"):  # Check if 'raw' exists in the TaskOutput
                 try:
-                    parsed_json = json.loads(task_output.raw)  # Parse the raw string as JSON  ## LANDING PAGE RESPONSE 
-                    print(f"\nSection: {key}")
-                    print(json.dumps(parsed_json, indent=4))  # Pretty print the JSON
+                    parsed_json = json.loads(task_output.raw)  # Parse the raw string as JSON ## LANDING PAGE RESPONSE
                 except json.JSONDecodeError:
-                    print(f"\nSection: {key} (Invalid JSON format)")
-                    print(task_output.raw)  # Print as-is if JSON parsing fails
+                    parsed_json = {"error": "Invalid JSON format", "raw_output": task_output.raw}  # Fallback JSON structure
+                print(f"\nSection: {key}")
+                print(json.dumps(parsed_json, indent=4))  # Pretty print the JSON
             else:
-                print(f"\nSection: {key} (No raw output available)")
+                parsed_json = {"error": "No raw output available"}  # Fallback JSON
+                print(f"\nSection: {key}")
+                print(json.dumps(parsed_json, indent=4))
     else:
-        print("Error: Output format is not a dictionary.")
+        print(json.dumps({"error": "Output format is not a dictionary"}, indent=4))
 
