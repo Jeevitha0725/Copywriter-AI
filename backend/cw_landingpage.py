@@ -6,6 +6,9 @@ import json
 # Set the API key
 os.environ["GROQ_API_KEY"] = "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"
 
+os.environ["OTEL_SDK_DISABLED"] = "true"
+
+
 # Retrieve API key
 api_key = os.getenv("GROQ_API_KEY")
 if not api_key:
@@ -101,6 +104,26 @@ def generate_content(selected_sections, company_name, company_type, company_desc
                 }}
             }}'''
         )
+    
+    if "features" in selected_sections:
+        content_dict["features"] = Task(
+            description=f"Generate a JSON formatted features section highlighting the key benefits of {company_name}.",
+            agent=Agent(
+                llm=llm,
+                role="Product Marketing Specialist",
+                goal=f"Showcase the top features and benefits of {company_name}'s ({company_type}) offerings in a {tone_of_voice} tone.",
+                backstory="Expert in product positioning and marketing, focused on highlighting value-driven features.",
+                verbose=False,
+                allow_deviation=False,  
+                rules=[
+                    "Strictly return only a JSON object.",
+                    "Do not include any additional descriptions, explanations, or context.",
+                    "The output must be concise and in proper JSON format."
+                ]
+            ),
+            expected_output='{"features":["feature1", "feature2", "feature3"]}'
+        )
+
         
     if "testimonials" in selected_sections:
         content_dict["testimonials"] = Task(
@@ -201,10 +224,11 @@ if __name__ == "__main__":
     print("1. Navigation Section")
     print("2. Hero Section")
     print("3. How It Works Section")
-    print("4. Testimonial Section")
-    print("5. About US Section")
+    print("4. Features Section")
+    print("5. Testimonial Section")
+    print("6. About US Section")
 
-    section_choices = input("\nEnter the numbers corresponding to your choices (e.g., 1,2,3,4): ").strip()
+    section_choices = input("\nEnter the numbers corresponding to your choices (e.g., 1,2,3,4,5,6): ").strip()
     selected_sections = []
 
     if "1" in section_choices:
@@ -214,8 +238,10 @@ if __name__ == "__main__":
     if "3" in section_choices:
         selected_sections.append("howitworks")
     if "4" in section_choices:
-        selected_sections.append("testimonials")
+        selected_sections.append("features")
     if "5" in section_choices:
+        selected_sections.append("testimonials")
+    if "6" in section_choices:
         selected_sections.append("about_us")
     
 
@@ -236,7 +262,7 @@ if __name__ == "__main__":
         for key, task_output in output_texts.items():
             if hasattr(task_output, "raw"):  # Check if 'raw' exists in the TaskOutput
                 try:
-                    parsed_json = json.loads(task_output.raw)  # Parse the raw string as JSON
+                    parsed_json = json.loads(task_output.raw)  # Parse the raw string as JSON  ## LANDING PAGE RESPONSE 
                     print(f"\nSection: {key}")
                     print(json.dumps(parsed_json, indent=4))  # Pretty print the JSON
                 except json.JSONDecodeError:

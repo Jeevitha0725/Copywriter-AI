@@ -6,6 +6,8 @@ import json
 # Set the API key
 os.environ["GROQ_API_KEY"] = "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"
 
+os.environ["OTEL_SDK_DISABLED"] = "true"
+
 # Retrieve API key
 api_key = os.getenv("GROQ_API_KEY")
 if not api_key:
@@ -103,7 +105,7 @@ if __name__ == "__main__":
         print("Error: Please provide all required inputs.")
     else:
         print("\nGenerating headline...\n")
-        headline = generate_headline(product_name, product_description, target_audience, creativity, tone_of_voice)
+        headline = generate_headline(product_name, product_description, target_audience, creativity, tone_of_voice)  ## HEADLINE REPONSE
 
-        print(json.dumps(headline, indent=2))  # Pretty-print the JSON output
+        # print(json.dumps(headline, indent=2))  # Pretty-print the JSON output
         print(type(headline))  # Confirming the dictionary type

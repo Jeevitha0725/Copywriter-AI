@@ -6,6 +6,8 @@ import json
 # Set the API key
 os.environ["GROQ_API_KEY"] = "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"
 
+os.environ["OTEL_SDK_DISABLED"] = "true"
+
 # Retrieve API key
 api_key = os.getenv("GROQ_API_KEY")
 if not api_key:
@@ -106,10 +108,10 @@ if __name__ == "__main__":
         how_it_works = str(generate_how_it_works(product_name, product_description, target_audience, creativity, tone_of_voice))
         
         print("Generated 'How It Works' Section:")
-        how_it_works_data = json.loads(how_it_works)
+        how_it_works_data = json.loads(how_it_works)  ## HOW IT WORKS RESPONSE
         print(how_it_works_data, type(how_it_works_data))
-        # Display all keys
-        print("Keys:", how_it_works_data.keys())
+        # # Display all keys
+        # print("Keys:", how_it_works_data.keys())
 
-        # Display keys of the nested dictionary
-        print("Nested Keys:", how_it_works_data['howItWorksSection'].keys())
+        # # Display keys of the nested dictionary
+        # print("Nested Keys:", how_it_works_data['howItWorksSection'].keys())

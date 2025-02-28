@@ -6,6 +6,8 @@ import json
 # Set the API key
 os.environ["GROQ_API_KEY"] = "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"
 
+os.environ["OTEL_SDK_DISABLED"] = "true"
+
 # Retrieve API key
 api_key = os.getenv("GROQ_API_KEY")
 if not api_key:
@@ -109,7 +111,7 @@ if __name__ == "__main__":
         
         print("Generated 'Hero Section':")
         hero_section_data = json.loads(hero_section)
-        print(hero_section_data, type(hero_section_data))
+        print(hero_section_data, type(hero_section_data)) ## HERO SECTION RESPONSE
         # Display all keys
         print("Keys:", hero_section_data.keys())
 

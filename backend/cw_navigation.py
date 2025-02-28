@@ -6,6 +6,8 @@ import json
 # Set the API key
 os.environ["GROQ_API_KEY"] = "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"
 
+os.environ["OTEL_SDK_DISABLED"] = "true"
+
 # Retrieve API key
 api_key = os.getenv("GROQ_API_KEY")
 if not api_key:
@@ -107,6 +109,6 @@ if __name__ == "__main__":
         navigation = str(generate_navigation(company_name, company_type, product_name, product_description, creativity, tone_of_voice))
         
         print("Generated Navigation Menu:")
-        navigation_data = json.loads(navigation)
+        navigation_data = json.loads(navigation)  ## NAVIGATION RESPONSE
         print(navigation_data, type(navigation_data))
         

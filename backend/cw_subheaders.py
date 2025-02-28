@@ -6,6 +6,8 @@ import json
 # Set the API key
 os.environ["GROQ_API_KEY"] = "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"
 
+os.environ["OTEL_SDK_DISABLED"] = "true"
+
 # Retrieve API key
 api_key = os.getenv("GROQ_API_KEY")
 if not api_key:
@@ -116,7 +118,7 @@ if __name__ == "__main__":
     else:
         print("\nGenerating subheadings...\n")
         subheadings = generate_subheadings(product_name, product_description, target_audience, creativity, tone_of_voice)
-        print(type(subheadings))
-        print("Generated Subheadings:")
-        for subheading in subheadings.get("subheadings", []):
-            print(f"🔹 {subheading}")
+        print(subheadings,type(subheadings))  ## SUBHEADER RESPONSE
+        # print("Generated Subheadings:")
+        # for subheading in subheadings.get("subheadings", []):
+        #     print(f"🔹 {subheading}")

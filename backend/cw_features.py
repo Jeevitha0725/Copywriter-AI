@@ -20,61 +20,65 @@ llm = ChatGroq(
     api_key=api_key
 )
 
-def generate_about_us(product_name, product_description, target_audience, creativity, tone_of_voice):
-    """Generate a well-structured 'About Us' section based on user inputs."""
+def generate_features(company_name, company_description, product_name, product_description, target_audience, creativity, tone_of_voice):
+    """Generate a list of features for a product in JSON format."""
     
     # Adjust temperature based on creativity level
     temperature = 1.0 if creativity.lower() == "high" else 0.7  
     llm.temperature = temperature  
 
-    # Agent: Content Strategist
-    about_us_writer = Agent(
+    # Agent: Feature Extractor
+    feature_extractor = Agent(
         llm=llm,
-        role="Brand Storyteller",
-        goal=(f"Write an engaging and well-structured 'About Us' section for {product_name}, "
-              f"highlighting its mission, values, target audience ({target_audience}), and tone ({tone_of_voice})."),
-        backstory="You specialize in writing compelling brand stories that connect with customers.",
+        role="Feature Extractor",
+        goal=f"Extract only key features of {product_name} from {company_name} in JSON format.",
+        backstory="An expert in identifying core product strengths and features for effective marketing.",
         verbose=False,
         allow_deviation=False,
         rules=[
             "Strictly return only a dictionary object.",
-            "Ensure the tone of voice matches the provided specification.",
-            "Provide a concise yet impactful 'About Us' section.",
-            "Avoid unnecessary information and stick to the given details."
+            'Output must be in JSON format: {"features": "feature1", "feature2", "feature3"]}.',
+            "Do not include explanations, benefits, or any additional information.",
+            "Ensure features are concise and product-focused.",
+            "Match the tone of voice specified.",
+            "Extract exactly 3-5 key features from the product description."
         ]
     )
 
-    # Task: Generating the About Us Section
-    about_us_task = Task(
+    # Task: Extract Features
+    feature_task = Task(
         description=(
-            "Create a structured and compelling 'About Us' section based on the provided details.\n\n"
+            "Generate a JSON-formatted list of key features based on the provided details.\n\n"
+            f"Company Name: {company_name}\n"
+            f"Company Description: {company_description}\n"
             f"Product Name: {product_name}\n"
             f"Product Description: {product_description}\n"
             f"Target Audience: {target_audience}\n"
             f"Creativity Level: {creativity}\n"
             f"Tone of Voice: {tone_of_voice}\n\n"
-            'Output must strictly be a Python dictionary with "title" and "description" keys.'
+            "Output format must be: {\"features\": [\"Feature 1\", \"Feature 2\", \"Feature 3\"]}"
         ),
-        expected_output='{"about_us": {"title": "Generated Title for about us content", "description": "Generated Description for about us content"}}',
-        agent=about_us_writer,
+        expected_output='{"features": ["feature1", "feature2", "feature3"]}',
+        agent=feature_extractor,
     )
 
     # Crew: Executing the Task
     crew = Crew(
-        agents=[about_us_writer],
-        tasks=[about_us_task],
+        agents=[feature_extractor],
+        tasks=[feature_task],
         verbose=False
     )
 
-    # Generate About Us content
+    # Generate Features
     result = crew.kickoff(inputs={})
     return result  # Directly return the dictionary
 
-
 if __name__ == "__main__":
-    """Direct execution for input and 'About Us' generation."""
-    product_name = input("Enter Product/Company Name: ").strip()
-    product_description = input("Enter Product/Company Description: ").strip()
+    """Direct execution for input and feature extraction."""
+    company_name = input("Enter Company Name: ").strip()
+    company_description = input("Enter Company Description: ").strip()
+    product_name = input("Enter Product Name: ").strip()
+    product_description = input("Enter Product Description: ").strip()
     target_audience = input("Enter Target Audience: ").strip()
 
     creativity = input("Enter Creativity Level (Normal, High): ").strip().capitalize()
@@ -101,17 +105,16 @@ if __name__ == "__main__":
         print("Invalid choice! Defaulting to 'Professional'.")
         tone_of_voice = "Professional"
 
-    if not product_name or not product_description or not target_audience:
+    if not company_name or not company_description or not product_name or not product_description or not target_audience:
         print("Error: Please provide all required inputs.")
     else:
-        print("\nGenerating 'About Us' section...\n")
-        about_us = str(generate_about_us(product_name, product_description, target_audience, creativity, tone_of_voice))
+        print("\nGenerating Features...\n")
+        features = str(generate_features(company_name, company_description, product_name, product_description, target_audience, creativity, tone_of_voice))
         
-        print("Generated 'About Us' Section:")
-        about_us_data = json.loads(about_us)  ## ABOUT US RESPONSE
-        print(about_us_data,type(about_us_data)) 
+        print("Generated Features:")
+        features_data = json.loads(features)  ## FEATURES RESPONSE
+        print(features_data, type(features_data))
         # # Display all keys
-        # print("Keys:", about_us_data.keys())
-
+        # print("Keys:", features_data.keys())
         # # Display keys of the nested dictionary
-        # print("Nested Keys:", about_us_data['about_us'].keys())
+        # print("Nested Keys:", features_data['features'])
