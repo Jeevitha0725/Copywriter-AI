@@ -1,5 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import Layout from "@/components/Layout";
+import HeaderSection from '@/components/HeaderSection';
+import HeroSection from '@/components/HeroSection';
+import HowItWorksSection from '@/components/HowItWorksSection';
+import TestimonialsSection from '@/components/TestimonialsSection';
+import AboutUsSection from '@/components/AboutUsSection';
 
 const Index = () => {
   const [showForm, setShowForm] = useState(true);
@@ -21,6 +27,84 @@ const Index = () => {
   const [characterCount, setCharacterCount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    // Replace with your API call
+    const fetchData = async () => {
+      const response = {
+        headerSection: {
+          logo: "Syncner",
+          links: ["Home", "AboutUs"],
+        },
+        heroSection: {
+          title: "Elevate Your Business with Syncner's Innovative Solutions",
+          description:
+            "Take your business to the next level with Syncner. Our customized solutions and streamlined processes will help you reach new heights of success in your industry.",
+        },
+        howItWorksSection: {
+          title: "Elevate Your Business with Customized Solutions from Syncner",
+          description:
+            "Take your business to new heights with Syncner. Our customized solutions and streamlined processes will help drive your success in a constantly evolving industry.",
+          services: [
+            {
+              title: "Consultation",
+              description:
+                "Our team of experts will meet with you to understand your business needs and goals. We will discuss your design requirements, budget, and timeline.",
+            },
+            {
+              title: "Customized Solution",
+              description:
+                "Based on our consultation, we will design a tailored solution for your business that aligns with your specific needs. This may include creating a new brand identity, developing marketing materials, or revamping your website.",
+            },
+          ],
+        },
+        testimonials: {
+          title: "Testimonials",
+          description:
+            "Don't just take our word for it, read from our extensive list of case studies and customer testimonials.",
+          testimonialLists: [
+            {
+              comment:
+                "I have been using Syncner for my business needs and I am blown away by the efficiency and innovation they bring to the table. Their tailored solutions have truly helped streamline our processes and improve our overall operations. The team at Syncner is dedicated, knowledgeable, and always goes above and beyond to ensure their clients' success. Thank you Syncner for taking our business to the next level!",
+              user: "Jane Cooper",
+              company: "CEO SomeCompany",
+            },
+            {
+              comment:
+                "I have been using Syncner for my business needs and I am blown away by the efficiency and innovation they bring to the table. Their tailored solutions have truly helped streamline our processes and improve our overall operations. The team at Syncner is dedicated, knowledgeable, and always goes above and beyond to ensure their clients' success. Thank you Syncner for taking our business to the next level!",
+              user: "Jane Cooper",
+              company: "CEO SomeCompany",
+            },
+          ],
+        },
+        aboutUsSection: {
+          title:
+            "Unlock Your Business's Full Potential with Syncner: Tailored Solutions for Maximum Success",
+          description:
+            "Syncner was founded by a team of designers with a passion for helping businesses reach their full potential. With years of experience in the design industry, we understand the challenges and complexities that come with running a successful business.",
+        },
+      };
+      setData(response);
+    };
+    fetchData();
+  }, []);
+
+  const handleSectionUpdate = (sectionKey, updatedData) => {
+    setData(prev => ({
+      ...prev,
+      [sectionKey]: {
+        ...prev[sectionKey],
+        ...updatedData
+      }
+    }));
+  };
+
+  // Ensure data is loaded before rendering
+  if (!data) {
+    return <div>Loading...</div>;
+  }
+
   const availableSections = [
     { id: 'navigation', label: 'Navigation/Menu' },
     { id: 'hero', label: 'Hero Section/Header' },
@@ -38,6 +122,46 @@ const Index = () => {
     { id: 'footer', label: 'Footer' }
   ];
 
+  const sectionComponents = [
+    { key: 'headerSection', component: data.headerSection && (
+      <HeaderSection
+        logo={data.headerSection.logo}
+        links={data.headerSection.links}
+      />
+    )},
+    { key: 'heroSection', component: data.heroSection && (
+      <HeroSection
+        title={data.heroSection.title}
+        description={data.heroSection.description}
+        onUpdate={(updates) => handleSectionUpdate('heroSection', updates)}
+      />
+    )},
+    { key: 'howItWorksSection', component: data.howItWorksSection && (
+      <HowItWorksSection
+        title={data.howItWorksSection.title}
+        description={data.howItWorksSection.description}
+        services={data.howItWorksSection.services}
+      />
+    )},
+    { key: 'testimonials', component: data.testimonials && (
+      <TestimonialsSection
+        title={data.testimonials.title}
+        description={data.testimonials.description}
+        testimonialLists={data.testimonials.testimonialLists}
+      />
+    )},
+    { key: 'aboutUsSection', component: data.aboutUsSection && (
+      <AboutUsSection
+        title={data.aboutUsSection.title}
+        description={data.aboutUsSection.description}
+      />
+    )}
+  ];
+
+  const availableSectionsRes = sectionComponents.filter(section => 
+    data[section.key] && section.component
+  );
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -50,14 +174,31 @@ const Index = () => {
     }
   };
 
-  const handleSectionSelect = (sectionId) => {
+  const handleSectionSelect = (e) => {
+    const sectionId = e.target.value;
     if (!sectionId) return;
-    
-    if (selectedSections.some(s => s.id === sectionId)) {
-      setSelectedSections(prev => prev.filter(s => s.id !== sectionId));
-    } else {
-      setSelectedSections(prev => [...prev, { id: sectionId, label: sectionId }]);
+
+    const section = availableSections.find(s => s.id === sectionId);
+    if (section && !selectedSections.some(s => s.id === sectionId)) {
+      if (selectedSections.length < 8) {
+        setSelectedSections(prev => [...prev, { id: sectionId, label: section.label }]);
+      }
     }
+    e.target.value = ''; // Reset dropdown after selection
+  };
+
+  const removeSection = (sectionId) => {
+    setSelectedSections(prev => prev.filter(section => section.id !== sectionId));
+  };
+
+  const onDragEnd = (result) => {
+    if (!result.destination) return;
+
+    const items = Array.from(selectedSections);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+
+    setSelectedSections(items);
   };
 
   const handleCreatePage = async () => {
@@ -89,7 +230,7 @@ const Index = () => {
     return (
       <Layout>
         <div className="min-h-screen bg-gray-50 py-8">
-          <div className="max-w-4xl mx-auto">
+          <div className="mx-auto px-6">
             <div className="bg-white rounded-lg shadow">
               <div className="p-6 border-b border-gray-200">
                 <div className="flex justify-between items-center">
@@ -104,33 +245,21 @@ const Index = () => {
               </div>
               <div className="p-6">
                 {/* Preview sections */}
-                <div className="space-y-6">
-                  {/* Header Section */}
-                  <div className="border rounded-lg">
-                    <div className="bg-gray-50 px-4 py-2 border-b">
-                      <h3 className="text-sm font-medium text-gray-900">Header Section</h3>
-                    </div>
-                    <div className="p-4">
-                      <p className="text-black">{formData.companyName}</p>
-                      {/* Add more header content */}
-                    </div>
-                  </div>
-
-                  {/* Hero Section */}
-                  <div className="border rounded-lg">
-                    <div className="bg-gray-50 px-4 py-2 border-b">
-                      <h3 className="text-sm font-medium text-gray-900">Hero Section</h3>
-                    </div>
-                    <div className="p-4">
-                      <h2 className="text-2xl font-bold text-black mb-2">
-                        Transform Your {formData.companyType} with {formData.companyName}
-                      </h2>
-                      <p className="text-black">{formData.companyDescription}</p>
-                    </div>
-                  </div>
-
-                  {/* Add other sections based on selectedSections */}
-                </div>
+                <div className="bg-white rounded-lg shadow-sm">
+          <div className="p-6 border-b border-gray-200">
+            <h2 className="text-lg font-semibold text-gray-900">Website Design</h2>
+            <p className="mt-1 text-sm text-gray-500">
+              Edit and preview your website design
+            </p>
+          </div>
+          <div className="bg-white border rounded-lg m-6">
+            {availableSectionsRes.map(({ key, component }) => (
+              <React.Fragment key={key}>
+                {component}
+              </React.Fragment>
+            ))}
+          </div>
+        </div>
               </div>
             </div>
           </div>
@@ -253,52 +382,72 @@ const Index = () => {
                 <label className="block text-sm font-medium text-gray-700">
                   Page Structure* (min 3 / max 8)
                 </label>
-                <div className="mt-2 space-y-2">
-                  {selectedSections.map((section) => (
-                    <div
-                      key={section.id}
-                      className="flex items-center p-3 bg-gray-50 rounded-md"
-                    >
-                      <span className="mr-2">≡</span>
-                      <span className="text-black">{section.label}</span>
-                      <button
-                        onClick={() => handleSectionSelect(section.id)}
-                        className="ml-auto text-gray-500 hover:text-gray-700"
+                <DragDropContext onDragEnd={onDragEnd}>
+                  <Droppable droppableId="sections">
+                    {(provided) => (
+                      <div
+                        {...provided.droppableProps}
+                        ref={provided.innerRef}
+                        className="mt-2 space-y-2"
                       >
-                        −
-                      </button>
-                    </div>
-                  ))}
-                  
-                  {/* Section Selector Dropdown */}
-                  <div className="relative">
-                    <select
-                      onChange={(e) => {
-                        handleSectionSelect(e.target.value);
-                        e.target.value = ''; // Reset after selection
-                      }}
-                      className="mt-1 block w-full rounded-md border border-gray-300 bg-gray-50 py-2 px-3 shadow-sm focus:border-indigo-500 focus:outline-none text-black"
-                      value=""
-                    >
-                      <option value="">-- Select section --</option>
-                      {availableSections.map((section) => {
-                        const isSelected = selectedSections.some(s => s.id === section.id);
-                        return (
-                          <option 
-                            key={section.id} 
-                            value={section.id}
-                            disabled={isSelected}
+                        {selectedSections.map((section, index) => (
+                          <Draggable
+                            key={section.id}
+                            draggableId={section.id}
+                            index={index}
                           >
-                            {section.label} {isSelected ? '(Selected)' : ''}
-                          </option>
-                        );
-                      })}
-                    </select>
-                    <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                      <span className="text-gray-500">+</span>
-                    </div>
+                            {(provided) => (
+                              <div
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                                className="flex items-center p-3 bg-gray-50 rounded-md cursor-move"
+                              >
+                                <span className="mr-2 text-gray-500">≡</span>
+                                <span className="text-black">{section.label}</span>
+                                <button
+                                  onClick={() => removeSection(section.id)}
+                                  className="ml-auto text-gray-500 hover:text-gray-700"
+                                >
+                                  −
+                                </button>
+                              </div>
+                            )}
+                          </Draggable>
+                        ))}
+                        {provided.placeholder}
+                      </div>
+                    )}
+                  </Droppable>
+                </DragDropContext>
+
+                {/* Section Selector Dropdown */}
+                <div className="relative mt-2">
+                  <select
+                    onChange={handleSectionSelect}
+                    className="mt-1 block w-full rounded-md border border-gray-300 bg-gray-50 py-2 px-3 shadow-sm focus:border-indigo-500 focus:outline-none text-black"
+                    value=""
+                  >
+                    <option value="">-- Select section --</option>
+                    {availableSections.map((section) => {
+                      const isSelected = selectedSections.some(s => s.id === section.id);
+                      return (
+                        <option 
+                          key={section.id} 
+                          value={section.id}
+                          disabled={isSelected}
+                        >
+                          {section.label} {isSelected ? '(Selected)' : ''}
+                        </option>
+                      );
+                    })}
+                  </select>
+                  <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                    <span className="text-gray-500">+</span>
                   </div>
                 </div>
+
+                {/* Validation Messages */}
                 {selectedSections.length < 3 && (
                   <p className="mt-2 text-sm text-orange-500">
                     Please select at least {3 - selectedSections.length} more section{selectedSections.length < 2 ? 's' : ''}.
