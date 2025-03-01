@@ -36,62 +36,47 @@ const AboutUsSection = ({ title, description, onUpdate }) => {
 
   return (
     <section className="bg-gradient-to-b from-white to-gray-50 py-20 sm:py-32">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="lg:grid lg:grid-cols-2 lg:gap-16 items-center">
-          {/* Content Side */}
-          <div className="mb-12 lg:mb-0">
-            <span className="text-indigo-600 font-semibold text-sm uppercase tracking-wider">
-              About Us
-            </span>
-            <h2 
-              className={`text-3xl font-extrabold text-gray-900 sm:text-4xl ${editableClasses}`}
-              onClick={() => handleEditClick('title')}
-            >
-              <span className={editButtonClasses}>Edit</span>
-              {content.title}
-            </h2>
-            <div 
-              className={`mt-6 text-lg text-gray-600 ${editableClasses}`}
-              onClick={() => handleEditClick('description')}
-            >
-              <span className={editButtonClasses}>Edit</span>
-              {typeof content.description === 'string' ? (
-                <p>{content.description}</p>
-              ) : (
-                content.description.map((paragraph, index) => (
-                  <p key={index} className="mb-4">{paragraph}</p>
-                ))
-              )}
-            </div>
-            
-            {/* Optional Stats */}
-            <div className="mt-10 grid grid-cols-2 gap-8 sm:grid-cols-3">
-              <div>
-                <div className="text-3xl font-extrabold text-indigo-600">10+</div>
-                <div className="mt-1 text-gray-500">Years Experience</div>
-              </div>
-              <div>
-                <div className="text-3xl font-extrabold text-indigo-600">500+</div>
-                <div className="mt-1 text-gray-500">Projects Completed</div>
-              </div>
-              <div>
-                <div className="text-3xl font-extrabold text-indigo-600">99%</div>
-                <div className="mt-1 text-gray-500">Client Satisfaction</div>
-              </div>
-            </div>
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Content Side - Now centered and full width */}
+        <div>
+          <span className="text-indigo-600 font-semibold text-sm uppercase tracking-wider">
+            About Us
+          </span>
+          <h2 
+            className={`text-3xl font-extrabold text-gray-900 sm:text-4xl ${editableClasses}`}
+            onClick={() => handleEditClick('title')}
+          >
+            <span className={editButtonClasses}>Edit</span>
+            {content.title}
+          </h2>
+          <div 
+            className={`mt-6 text-lg text-gray-600 ${editableClasses}`}
+            onClick={() => handleEditClick('description')}
+          >
+            <span className={editButtonClasses}>Edit</span>
+            {typeof content.description === 'string' ? (
+              <p>{content.description}</p>
+            ) : (
+              content.description.map((paragraph, index) => (
+                <p key={index} className="mb-4">{paragraph}</p>
+              ))
+            )}
           </div>
-
-          {/* Image Side */}
-          <div className="relative">
-            <div className="aspect-w-5 aspect-h-6 rounded-2xl overflow-hidden shadow-xl">
-              <img
-                src="/path-to-your-image.jpg"
-                alt="About Us"
-                className="object-cover w-full h-full"
-              />
+          
+          {/* Stats - Adjusted grid for better spacing */}
+          <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-8">
+            <div className="text-center">
+              <div className="text-3xl font-extrabold text-indigo-600">10+</div>
+              <div className="mt-2 text-gray-500">Years Experience</div>
             </div>
-            {/* Decorative Elements */}
-            <div className="absolute -z-10 inset-0 bg-gradient-to-r from-indigo-100 to-blue-100 transform rotate-6 rounded-2xl scale-95 translate-x-4 translate-y-4"></div>
+            <div className="text-center">
+              <div className="text-3xl font-extrabold text-indigo-600">500+</div>
+              <div className="mt-2 text-gray-500">Projects Completed</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-extrabold text-indigo-600">99%</div>
+              <div className="mt-2 text-gray-500">Client Satisfaction</div>
+            </div>
           </div>
         </div>
       </div>
