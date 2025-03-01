@@ -1,37 +1,49 @@
-import React from "react";
-import Layout from "../../components/Layout";
+import { useState } from "react";
+import Link from "next/link";
+import Layout from "@/components/Layout";
 
-const Dashboard = () => {
+export default function Dashboard() {
+  const aiTools = [
+    {
+      id: 1,
+      title: "Landing Page AI",
+      description: "Create unique landing pages with AI assistance",
+      icon: "🎨",
+      link: "/design",
+    },
+    {
+      id: 2,
+      title: "Content Writer",
+      description: "Generate engaging content for your website",
+      icon: "✍️",
+      link: "/content",
+    },
+    // Add more tools as needed
+  ];
+
   return (
     <Layout>
-      <div className="p-4 sm:p-6 lg:p-8">
-        <div className="bg-white rounded-lg shadow-sm">
-          <div className="p-4 sm:p-6 border-b border-gray-200">
-            <h2 className="text-lg font-semibold text-gray-900">Dashboard</h2>
-            <p className="mt-1 text-sm text-gray-500">
-              Overview of your website analytics
-            </p>
-          </div>
-          <div className="p-4 sm:p-6">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-              <div className="bg-blue-50 p-4 sm:p-6 rounded-lg">
-                <h3 className="text-lg font-semibold text-blue-900">Views</h3>
-                <p className="text-2xl sm:text-3xl font-bold text-blue-600 mt-2">1,234</p>
-              </div>
-              <div className="bg-green-50 p-4 sm:p-6 rounded-lg">
-                <h3 className="text-lg font-semibold text-green-900">Conversions</h3>
-                <p className="text-2xl sm:text-3xl font-bold text-green-600 mt-2">56</p>
-              </div>
-              <div className="bg-purple-50 p-4 sm:p-6 rounded-lg">
-                <h3 className="text-lg font-semibold text-purple-900">Engagement</h3>
-                <p className="text-2xl sm:text-3xl font-bold text-purple-600 mt-2">85%</p>
-              </div>
-            </div>
+      <div className="min-h-screen bg-gray-50 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-8">
+            AI Tools Dashboard
+          </h1>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {aiTools.map((tool) => (
+              <Link key={tool.id} href={tool.link}>
+                <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-200 cursor-pointer">
+                  <div className="text-4xl mb-4">{tool.icon}</div>
+                  <h2 className="text-xl font-semibold text-gray-900 mb-2">
+                    {tool.title}
+                  </h2>
+                  <p className="text-gray-600">{tool.description}</p>
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
       </div>
     </Layout>
   );
-};
-
-export default Dashboard; 
+}
