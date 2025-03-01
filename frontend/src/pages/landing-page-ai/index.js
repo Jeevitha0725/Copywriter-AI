@@ -1,11 +1,51 @@
 import React, { useState, useEffect } from 'react';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { DndProvider, useDrag, useDrop } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 import Layout from "@/components/Layout";
 import HeaderSection from '@/components/HeaderSection';
 import HeroSection from '@/components/HeroSection';
 import HowItWorksSection from '@/components/HowItWorksSection';
 import TestimonialsSection from '@/components/TestimonialsSection';
 import AboutUsSection from '@/components/AboutUsSection';
+
+const DraggableSection = ({ section, index, moveSection, removeSection }) => {
+  const [{ isDragging }, drag] = useDrag({
+    type: 'section',
+    item: { index },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  });
+
+  const [, drop] = useDrop({
+    accept: 'section',
+    hover: (draggedItem) => {
+      if (draggedItem.index !== index) {
+        moveSection(draggedItem.index, index);
+        draggedItem.index = index;
+      }
+    },
+  });
+
+  return (
+    <div
+      ref={(node) => drag(drop(node))}
+      className={`flex items-center p-3 bg-gray-50 rounded-md ${
+        isDragging ? 'opacity-50' : ''
+        }`}
+      style={{cursor: "grab"}}
+    >
+      <span className="mr-2 text-gray-500 cursor-move">≡</span>
+      <span className="text-black">{section.label}</span>
+      <button
+        onClick={() => removeSection(section.id)}
+        className="ml-auto text-gray-500 hover:text-gray-700"
+      >
+        −
+      </button>
+    </div>
+  );
+};
 
 const Index = () => {
   const [showForm, setShowForm] = useState(true);
@@ -191,34 +231,36 @@ const Index = () => {
     setSelectedSections(prev => prev.filter(section => section.id !== sectionId));
   };
 
-  const onDragEnd = (result) => {
-    if (!result.destination) return;
-
-    const items = Array.from(selectedSections);
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
-
-    setSelectedSections(items);
+  const moveSection = (fromIndex, toIndex) => {
+    setSelectedSections((prevSections) => {
+      const sections = [...prevSections];
+      const [movedSection] = sections.splice(fromIndex, 1);
+      sections.splice(toIndex, 0, movedSection);
+      return sections;
+    });
   };
 
   const handleCreatePage = async () => {
     setIsLoading(true);
     try {
-      // Simulated API call
-      const response = {
-        headerSection: {
-          logo: formData.companyName,
-          links: ["Home", "About Us", "Services", "Contact"],
-        },
-        heroSection: {
-          title: `Transform Your ${formData.companyType} with ${formData.companyName}`,
-          description: formData.companyDescription,
-        },
-        // Add other sections based on selectedSections
-      };
-      
+      // Log all form data
+      console.log('Form Data:', {
+        language: formData.language,
+        toneOfVoice: formData.toneOfVoice,
+        companyName: formData.companyName,
+        companyType: formData.companyType,
+        audience: formData.audience,
+        mainColor: formData.mainColor,
+        companyDescription: formData.companyDescription,
+        selectedSections: selectedSections.map(section => ({
+          id: section.id,
+          label: section.label
+        }))
+      });
+
+      // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
-      setShowForm(false); // Hide form after successful creation
+      setShowForm(false);
     } catch (error) {
       console.error('Error creating page:', error);
     } finally {
@@ -382,46 +424,21 @@ const Index = () => {
                 <label className="block text-sm font-medium text-gray-700">
                   Page Structure* (min 3 / max 8)
                 </label>
-                <DragDropContext onDragEnd={onDragEnd}>
-                  <Droppable droppableId="sections">
-                    {(provided) => (
-                      <div
-                        {...provided.droppableProps}
-                        ref={provided.innerRef}
-                        className="mt-2 space-y-2"
-                      >
-                        {selectedSections.map((section, index) => (
-                          <Draggable
-                            key={section.id}
-                            draggableId={section.id}
-                            index={index}
-                          >
-                            {(provided) => (
-                              <div
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                                className="flex items-center p-3 bg-gray-50 rounded-md cursor-move"
-                              >
-                                <span className="mr-2 text-gray-500">≡</span>
-                                <span className="text-black">{section.label}</span>
-                                <button
-                                  onClick={() => removeSection(section.id)}
-                                  className="ml-auto text-gray-500 hover:text-gray-700"
-                                >
-                                  −
-                                </button>
-                              </div>
-                            )}
-                          </Draggable>
-                        ))}
-                        {provided.placeholder}
-                      </div>
-                    )}
-                  </Droppable>
-                </DragDropContext>
+                <DndProvider backend={HTML5Backend}>
+                  <div className="mt-2 space-y-2">
+                    {selectedSections.map((section, index) => (
+                      <DraggableSection
+                        key={section.id}
+                        section={section}
+                        index={index}
+                        moveSection={moveSection}
+                        removeSection={removeSection}
+                      />
+                    ))}
+                  </div>
+                </DndProvider>
 
-                {/* Section Selector Dropdown */}
+                {/* Section Selector */}
                 <div className="relative mt-2">
                   <select
                     onChange={handleSectionSelect}
@@ -442,9 +459,6 @@ const Index = () => {
                       );
                     })}
                   </select>
-                  <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                    <span className="text-gray-500">+</span>
-                  </div>
                 </div>
 
                 {/* Validation Messages */}
