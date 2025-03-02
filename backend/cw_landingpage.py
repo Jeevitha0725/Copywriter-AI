@@ -234,59 +234,58 @@ def generate_content(selected_sections, company_name, company_type, company_desc
 
 
 
+import requests
+
+# API endpoint for fetching landing page data
+url = "http://127.0.0.1:5000/landing_page"
+
+# Function to update company details
+def set_company_details(name, c_type, description, audience, tone, sections):
+    global company_name, company_type, company_description, target_audience, tone_of_voice, selected_sections
+    company_name = name
+    company_type = c_type
+    company_description = description
+    target_audience = audience
+    tone_of_voice = tone
+    selected_sections = sections
+
 if __name__ == "__main__":
-    # Collect company details first
-    company_name = input("Enter Company Name: ").strip()
-    company_type = input("Enter Company Type (e.g., eCommerce, SaaS): ").strip()
-    company_description = input("Enter Company Description: ").strip()
-    audience = input("Enter Target Audience: ").strip()
-    
-    print("\nSelect Tone of Voice:")
-    for i, tone in enumerate(tone_options, 1):
-        print(f"{i}. {tone}")
-
-    try:
-        tone_choice = int(input("\nEnter the number corresponding to the tone of voice: "))
-        tone_of_voice = tone_options[tone_choice - 1] if 1 <= tone_choice <= len(tone_options) else "Professional"
-    except ValueError:
-        tone_of_voice = "Professional"
-
-    # Section selection at the end
-    print("\nSelect the sections you want to generate (comma-separated):")
-    print("1. Navigation Section")
-    print("2. Hero Section")
-    print("3. How It Works Section")
-    print("4. Features Section")
-    print("5. Testimonial Section")
-    print("6. About US Section")
-    print("7. Footer Section")
-
-    section_choices = input("\nEnter the numbers corresponding to your choices (e.g., 1,2,3,4,5,6,7): ").strip()
+    # Initialize variables with default values
+    company_name = "Unknown"
+    company_type = "Unknown"
+    company_description = "Unknown"
+    target_audience = "Unknown"
+    tone_of_voice = "Professional"
     selected_sections = []
 
-    if "1" in section_choices:
-        selected_sections.append("navigation")
-    if "2" in section_choices:
-        selected_sections.append("hero")
-    if "3" in section_choices:
-        selected_sections.append("howitworks")
-    if "4" in section_choices:
-        selected_sections.append("features")
-    if "5" in section_choices:
-        selected_sections.append("testimonials")
-    if "6" in section_choices:
-        selected_sections.append("about_us")
-    if "7" in section_choices:
-        selected_sections.append("footer")
-    
+    try:
+        response = requests.get(url)
+        if response.status_code == 200:
+            data = response.json()
+            company_name = data.get("company_name", "Unknown")
+            company_type = data.get("company_type", "Unknown")
+            company_description = data.get("company_description", "Unknown")
+            target_audience = data.get("target_audience", "Unknown")
+            tone_of_voice = data.get("tone_of_voice", "Professional")
+            selected_sections = data.get("selected_sections", [])
+        else:
+            print("Warning: Unable to fetch data from Flask API. Using default values.")
+    except requests.exceptions.RequestException as e:
+        print(f"Error: {e}. Using default values.")
 
-    if not selected_sections:
-        print("\nInvalid choice. Please select at least one section.")
-        exit()
+    set_company_details(company_name, company_type, company_description, target_audience, tone_of_voice, selected_sections)
+
+    print("\nLanding Page Configuration:")
+    print(f"Company Name: {company_name}")
+    print(f"Company Type: {company_type}")
+    print(f"Company Description: {company_description}")
+    print(f"Target Audience: {target_audience}")
+    print(f"Tone of Voice: {tone_of_voice}")
+    print(f"Selected Sections: {', '.join(selected_sections) if selected_sections else 'None'}")
 
 
     print("\nGenerating Content...\n")
-    output_texts = generate_content(selected_sections, company_name, company_type, company_description, audience, tone_of_voice)
+    output_texts = generate_content(selected_sections, company_name, company_type, company_description, target_audience, tone_of_voice)
     
     # result=format_output(output_texts)
     print(type(output_texts),output_texts)
