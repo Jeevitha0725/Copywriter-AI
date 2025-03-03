@@ -64,7 +64,7 @@ const TestimonialsSection = ({ title, description, testimonialLists, onUpdate })
           {content.testimonialLists.map((testimonial, index) => (
             <div 
               key={index}
-              className={`bg-white p-8 rounded-2xl shadow-lg ${editableClasses}`}
+              className={`bg-white p-8 rounded-lg shadow-lg ${editableClasses}`}
               onClick={() => {
                 setEditingField({ type: 'testimonial', index });
                 setIsEditing(true);

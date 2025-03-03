@@ -66,7 +66,7 @@ const HowItWorksSection = ({ title, description, services, onUpdate }) => {
           {content.services.map((service, index) => (
             <div 
               key={index}
-              className={`bg-white p-8 rounded-2xl shadow-lg ${editableClasses}`}
+              className={`bg-white p-8 rounded-lg shadow-lg ${editableClasses}`}
               onClick={() => {
                 setEditingField({ type: 'service', index });
                 setIsEditing(true);

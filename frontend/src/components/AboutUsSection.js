@@ -37,7 +37,7 @@ const AboutUsSection = ({ title, description, onUpdate }) => {
   return (
     <section className="bg-gradient-to-b from-white to-gray-50 py-20 sm:py-32">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Content Side - Now centered and full width */}
+        {/* Content Side */}
         <div>
           <span className="text-indigo-600 font-semibold text-sm uppercase tracking-wider">
             About Us
@@ -63,17 +63,17 @@ const AboutUsSection = ({ title, description, onUpdate }) => {
             )}
           </div>
           
-          {/* Stats - Adjusted grid for better spacing */}
+          {/* Stats */}
           <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-8">
-            <div className="text-center">
+            <div className="bg-white p-6 rounded-lg shadow-md text-center">
               <div className="text-3xl font-extrabold text-indigo-600">10+</div>
               <div className="mt-2 text-gray-500">Years Experience</div>
             </div>
-            <div className="text-center">
+            <div className="bg-white p-6 rounded-lg shadow-md text-center">
               <div className="text-3xl font-extrabold text-indigo-600">500+</div>
               <div className="mt-2 text-gray-500">Projects Completed</div>
             </div>
-            <div className="text-center">
+            <div className="bg-white p-6 rounded-lg shadow-md text-center">
               <div className="text-3xl font-extrabold text-indigo-600">99%</div>
               <div className="mt-2 text-gray-500">Client Satisfaction</div>
             </div>

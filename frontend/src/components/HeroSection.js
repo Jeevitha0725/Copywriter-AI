@@ -36,7 +36,7 @@ const HeroSection = ({ title, description, onUpdate }) => {
   const editButtonClasses = "opacity-0 group-hover:opacity-100 absolute -top-3 -right-3 bg-blue-500 text-white px-2 py-1 rounded-full text-xs font-medium shadow-sm transition-opacity duration-200 z-10";
 
   return (
-    <section className="relative bg-gray-50 pt-24 pb-12 sm:pt-32 sm:pb-16 lg:pt-40 lg:pb-24">
+    <section className="bg-white pt-24 pb-12 sm:pt-32 sm:pb-16 lg:pt-40 lg:pb-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center space-y-8">
           {/* Title */}
@@ -57,7 +57,7 @@ const HeroSection = ({ title, description, onUpdate }) => {
             {content.description}
           </p>
           
-          {/* CTA Button - No longer editable */}
+          {/* CTA Button */}
           <button className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 transition-colors duration-200">
             Get Started
           </button>
@@ -74,8 +74,6 @@ const HeroSection = ({ title, description, onUpdate }) => {
         values={content}
         onChange={handleEdit}
       />
-      
-      <div className="absolute inset-x-0 top-0 bg-gradient-to-b from-indigo-100/20" aria-hidden="true" />
     </section>
   );
 };
