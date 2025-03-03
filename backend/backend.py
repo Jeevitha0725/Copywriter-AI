@@ -25,9 +25,24 @@ def landing_page():
 
     return jsonify({"message": "Landing page details updated", "data": res})
 
-@app.route('/landing_page', methods=['GET'])
-def get_landing_page():
-    return jsonify(cw_landingpage.parsed_json)  # Return the stored landing page details
+@app.route('/aboutus_tool', methods=['POST'])
+def aboutus_tool():
+    data = request.get_json()
+
+    # Extracting data from request
+    product_name = data.get('product_name', 'Unknown')
+    product_description = data.get('product_description', 'Unknown')
+    target_audience = data.get('target_audience', 'Unknown')
+    creativity = data.get('creativity', 'Normal')
+    tone_of_voice = data.get('tone_of_voice', 'Professional')
+
+    # Pass data to cw_landingpage
+    res = cw_landingpage.set_product_details(
+        product_name, product_description, target_audience, creativity, tone_of_voice
+    )
+
+    return jsonify({"message": "Landing page details updated", "data": res})
+
 
 if __name__ == '__main__':
     # Start Flask server in a separate thread
@@ -38,10 +53,12 @@ if __name__ == '__main__':
     flask_thread = Thread(target=run_flask)
     flask_thread.start()
 
-    # Collect company details
+    # Collect company and product details
     company_name = input("Enter Company Name: ").strip()
     company_type = input("Enter Company Type (e.g., eCommerce, SaaS): ").strip()
     company_description = input("Enter Company Description: ").strip()
+    product_name = input("Enter Product Name: ").strip()
+    product_description = input("Enter Product Description: ").strip()
     audience = input("Enter Target Audience: ").strip()
 
     # Tone selection
@@ -55,6 +72,18 @@ if __name__ == '__main__':
         tone_of_voice = tone_options[tone_choice - 1] if 1 <= tone_choice <= len(tone_options) else "Professional"
     except ValueError:
         tone_of_voice = "Professional"
+
+    # Creativity selection
+    creativity_levels = ["Low", "Normal", "High"]
+    print("\nSelect Creativity Level:")
+    for i, level in enumerate(creativity_levels, 1):
+        print(f"{i}. {level}")
+
+    try:
+        creativity_choice = int(input("\nEnter the number corresponding to the creativity level: "))
+        creativity = creativity_levels[creativity_choice - 1] if 1 <= creativity_choice <= len(creativity_levels) else "Normal"
+    except ValueError:
+        creativity = "Normal"
 
     # Section selection
     print("\nSelect the sections you want to generate (comma-separated):")
@@ -98,3 +127,23 @@ if __name__ == '__main__':
     # Fetch and print the updated details
     get_response = requests.get(url)
     print("Updated Landing Page Details:", get_response.json())
+    
+    
+
+    # API endpoint for sending data to the aboutus_tool route
+    url = "http://127.0.0.1:5000/aboutus_tool"
+    response = requests.post(url, json={
+        "product_name": product_name,
+        "product_description": product_description,
+        "target_audience": audience,
+        "creativity": creativity,
+        "tone_of_voice": tone_of_voice
+    })
+
+    # Print the response from Flask
+    print("Response from aboutus_tool:", response.json())
+
+    # Fetch and print the updated details using a GET request
+    get_response = requests.get(url)
+    print("Updated About Us Details:", get_response.json())
+

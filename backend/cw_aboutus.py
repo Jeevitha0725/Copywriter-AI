@@ -71,35 +71,47 @@ def generate_about_us(product_name, product_description, target_audience, creati
     return result  # Directly return the dictionary
 
 
+import requests
+
+# API endpoint for fetching landing page data
+url = "http://127.0.0.1:5000/landing_page"
+
+# Function to update product details
+def set_product_details(product_name, product_description, target_audience, creativity, tone):
+    """Set product details and generate content."""
+    return generate_about_us(product_name, product_description, target_audience, creativity, tone)
+
 if __name__ == "__main__":
-    """Direct execution for input and 'About Us' generation."""
-    product_name = input("Enter Product/Company Name: ").strip()
-    product_description = input("Enter Product/Company Description: ").strip()
-    target_audience = input("Enter Target Audience: ").strip()
-
-    creativity = input("Enter Creativity Level (Normal, High): ").strip().capitalize()
-    while creativity not in ["Normal", "High"]:
-        print("Invalid choice! Please enter either 'Normal' or 'High'.")
-        creativity = input("Enter Creativity Level (Normal, High): ").strip().capitalize()
-
-    tone_options = [
-        "Professional", "Childish", "Luxurious", "Friendly", "Formal", "Humorous",
-        "Confident", "Exciting", "Surprised", "Academic", "Optimistic", "Creative"
-    ]
-    
-    print("\nSelect Tone of Voice:")
-    for i, tone in enumerate(tone_options, 1):
-        print(f"{i}. {tone}")
+    # Initialize variables with default values
+    product_name = "Unknown"
+    product_description = "Unknown"
+    target_audience = "Unknown"
+    creativity = "Normal"
+    tone_of_voice = "Professional"
 
     try:
-        tone_choice = int(input("\nEnter the number corresponding to the tone of voice: "))
-        if 1 <= tone_choice <= len(tone_options):
-            tone_of_voice = tone_options[tone_choice - 1]
+        response = requests.get(url)
+        if response.status_code == 200:
+            data = response.json()
+            product_name = data.get("product_name", "Unknown")
+            product_description = data.get("product_description", "Unknown")
+            target_audience = data.get("target_audience", "Unknown")
+            creativity = data.get("creativity", "Normal")
+            tone_of_voice = data.get("tone_of_voice", "Professional")
         else:
-            raise ValueError
-    except ValueError:
-        print("Invalid choice! Defaulting to 'Professional'.")
-        tone_of_voice = "Professional"
+            print("Warning: Unable to fetch data from Flask API. Using default values.")
+    except requests.exceptions.RequestException as e:
+        print(f"Error: {e}. Using default values.")
+
+    set_product_details(product_name, product_description, target_audience, creativity, tone_of_voice)
+
+    print("\nLanding Page Configuration:")
+    print(f"Product Name: {product_name}")
+    print(f"Product Description: {product_description}")
+    print(f"Target Audience: {target_audience}")
+    print(f"Creativity Level: {creativity}")
+    print(f"Tone of Voice: {tone_of_voice}")
+
 
     if not product_name or not product_description or not target_audience:
         print("Error: Please provide all required inputs.")
