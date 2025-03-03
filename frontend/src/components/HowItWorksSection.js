@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import EditDialog from './EditDialog';
+import GenerateButton from './GenerateButton';
 
 const HowItWorksSection = ({ title, description, services, onUpdate }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [editingField, setEditingField] = useState(null);
   const [content, setContent] = useState({ title, description, services });
 
   const handleEdit = (key, value) => {
@@ -15,44 +15,54 @@ const HowItWorksSection = ({ title, description, services, onUpdate }) => {
     onUpdate?.(newContent);
   };
 
-  const handleEditClick = (field) => {
-    setEditingField(field);
-    setIsEditing(true);
-  };
-
-  const getFieldsForType = (type) => {
-    switch (type) {
-      case 'title':
-        return [{ key: 'title', label: 'Title', type: 'text' }];
-      case 'description':
-        return [{ key: 'description', label: 'Description', type: 'textarea' }];
-      case 'service':
-        return [
-          { key: 'title', label: 'Service Title', type: 'text' },
-          { key: 'description', label: 'Service Description', type: 'textarea' }
-        ];
-      default:
-        return [];
+  const handleGenerate = async (sectionType, formData) => {
+    try {
+      // TODO: Implement API call to generate content
+      // const response = await generateSectionContent(sectionType, formData);
+      // const newContent = response.data;
+      // setContent(newContent);
+      // onUpdate?.(newContent);
+      
+      // Temporary mock data
+      const mockResponse = {
+        title: "How It Works",
+        description: "Our simple three-step process to transform your content strategy",
+        services: [
+          {
+            title: "Input Your Requirements",
+            description: "Tell us about your business, target audience, and content goals"
+          },
+          {
+            title: "AI Analysis & Generation",
+            description: "Our AI analyzes your needs and generates optimized content"
+          },
+          {
+            title: "Review & Launch",
+            description: "Review the generated content and launch your new strategy"
+          }
+        ]
+      };
+      
+      setContent(mockResponse);
+      onUpdate?.(mockResponse);
+    } catch (error) {
+      console.error('Error generating content:', error);
+      throw error;
     }
   };
 
-  const editableClasses = "relative group cursor-pointer border-2 border-transparent hover:border-blue-500 rounded-lg transition-all duration-200 p-2";
-  const editButtonClasses = "opacity-0 group-hover:opacity-100 absolute -top-3 -right-3 bg-blue-500 text-white px-2 py-1 rounded-full text-xs font-medium shadow-sm transition-opacity duration-200 z-10";
-
   return (
-    <section className="py-16 bg-gray-50">
+    <section className="py-16 bg-gray-50 relative group">
+      <GenerateButton onClick={() => setIsEditing(true)} />
+      
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center">
-          <div className={`${editableClasses}`} onClick={() => handleEditClick('title')}>
-            <span className={editButtonClasses}>Edit</span>
-            <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
-              {content.title}
-            </h2>
-          </div>
-          <div className={`mt-4 text-xl text-gray-500 ${editableClasses}`} onClick={() => handleEditClick('description')}>
-            <span className={editButtonClasses}>Edit</span>
-            <p>{content.description}</p>
-          </div>
+          <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+            {content.title}
+          </h2>
+          <p className="mt-4 text-xl text-gray-500">
+            {content.description}
+          </p>
         </div>
 
         <div className="mt-12">
@@ -60,10 +70,8 @@ const HowItWorksSection = ({ title, description, services, onUpdate }) => {
             {content.services.map((service, index) => (
               <div
                 key={index}
-                className={`relative p-6 bg-white rounded-lg shadow-sm ${editableClasses}`}
-                onClick={() => handleEditClick({ type: 'service', index })}
+                className="relative p-6 bg-white rounded-lg shadow-sm"
               >
-                <span className={editButtonClasses}>Edit</span>
                 <div className="text-center">
                   <div className="flex items-center justify-center h-12 w-12 rounded-md bg-indigo-500 text-white mx-auto">
                     <svg
@@ -95,26 +103,9 @@ const HowItWorksSection = ({ title, description, services, onUpdate }) => {
 
       <EditDialog
         isOpen={isEditing}
-        onClose={() => {
-          setIsEditing(false);
-          setEditingField(null);
-        }}
-        fields={getFieldsForType(editingField?.type || editingField)}
-        values={editingField?.type === 'service' 
-          ? content.services[editingField.index]
-          : content}
-        onChange={(key, value) => {
-          if (editingField?.type === 'service') {
-            const newServices = [...content.services];
-            newServices[editingField.index] = {
-              ...newServices[editingField.index],
-              [key]: value
-            };
-            handleEdit('services', newServices);
-          } else {
-            handleEdit(key, value);
-          }
-        }}
+        onClose={() => setIsEditing(false)}
+        sectionType="howItWorks"
+        onGenerate={handleGenerate}
       />
     </section>
   );

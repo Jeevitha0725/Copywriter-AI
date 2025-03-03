@@ -1,8 +1,42 @@
-import React from 'react';
+import React, { useState } from 'react';
+import EditDialog from './EditDialog';
+import GenerateButton from './GenerateButton';
 
-const FeaturesSection = ({ features }) => {
+const FeaturesSection = ({ features, onUpdate }) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [content, setContent] = useState({ features });
+
+  const handleGenerate = async (sectionType, formData) => {
+    try {
+      // TODO: Implement API call to generate content
+      // const response = await generateSectionContent(sectionType, formData);
+      // const newContent = response.data;
+      // setContent(newContent);
+      // onUpdate?.(newContent);
+      
+      // Temporary mock data
+      const mockResponse = {
+        features: [
+          "AI-Powered Content Generation",
+          "Smart SEO Optimization",
+          "Multi-language Support",
+          "Real-time Analytics",
+          "Custom Branding Options"
+        ]
+      };
+      
+      setContent(mockResponse);
+      onUpdate?.(mockResponse);
+    } catch (error) {
+      console.error('Error generating content:', error);
+      throw error;
+    }
+  };
+
   return (
-    <section className="py-16 bg-white">
+    <section className="py-16 bg-white relative group">
+      <GenerateButton onClick={() => setIsEditing(true)} />
+      
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center">
           <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
@@ -13,10 +47,10 @@ const FeaturesSection = ({ features }) => {
           </p>
         </div>
         <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {features.map((feature, index) => (
+          {content.features.map((feature, index) => (
             <div
               key={index}
-              className="relative p-6 bg-white rounded-lg border border-gray-200 hover:shadow-lg transition-shadow duration-300"
+              className="relative p-6 bg-white rounded-lg"
             >
               <div className="flex items-center">
                 <div className="flex-shrink-0">
@@ -44,6 +78,13 @@ const FeaturesSection = ({ features }) => {
           ))}
         </div>
       </div>
+
+      <EditDialog
+        isOpen={isEditing}
+        onClose={() => setIsEditing(false)}
+        sectionType="features"
+        onGenerate={handleGenerate}
+      />
     </section>
   );
 };

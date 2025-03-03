@@ -1,61 +1,45 @@
 import React, { useState } from 'react';
 import EditDialog from './EditDialog';
+import GenerateButton from './GenerateButton';
 
 const AboutUsSection = ({ title, description, onUpdate }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [editingField, setEditingField] = useState(null);
   const [content, setContent] = useState({ title, description });
 
-  const handleEdit = (key, value) => {
-    const newContent = {
-      ...content,
-      [key]: value
-    };
-    setContent(newContent);
-    onUpdate?.(newContent);
-  };
-
-  const handleEditClick = (field) => {
-    setEditingField(field);
-    setIsEditing(true);
-  };
-
-  const getFieldsForType = (type) => {
-    switch (type) {
-      case 'title':
-        return [{ key: 'title', label: 'Title', type: 'text' }];
-      case 'description':
-        return [{ key: 'description', label: 'Description', type: 'textarea' }];
-      default:
-        return [];
+  const handleGenerate = async (sectionType, formData) => {
+    try {
+      // TODO: Implement API call to generate content
+      // const response = await generateSectionContent(sectionType, formData);
+      // const newContent = response.data;
+      // setContent(newContent);
+      // onUpdate?.(newContent);
+      
+      // Temporary mock data
+      const mockResponse = {
+        title: "About Our Company",
+        description: "We are a team of passionate innovators dedicated to transforming businesses through cutting-edge technology solutions. Our mission is to empower organizations with the tools they need to thrive in the digital age."
+      };
+      
+      setContent(mockResponse);
+      onUpdate?.(mockResponse);
+    } catch (error) {
+      console.error('Error generating content:', error);
+      throw error;
     }
   };
 
-  const editableClasses = "relative group cursor-pointer border-2 border-transparent hover:border-blue-500 rounded-lg transition-all duration-200 p-2";
-  const editButtonClasses = "opacity-0 group-hover:opacity-100 absolute -top-3 -right-3 bg-blue-500 text-white px-2 py-1 rounded-full text-xs font-medium shadow-sm transition-opacity duration-200 z-10";
-
   return (
-    <section className="relative py-24 bg-gradient-to-b from-white to-indigo-50 overflow-hidden">
-      {/* Decorative background elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-indigo-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
-      </div>
-
+    <section className="relative py-24 bg-gradient-to-b from-white to-indigo-50 overflow-hidden group">
+      <GenerateButton onClick={() => setIsEditing(true)} />
+      
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center">
-          <div className={`${editableClasses} inline-block`} onClick={() => handleEditClick('title')}>
-            <span className={editButtonClasses}>Edit</span>
-            <h2 className="text-4xl font-bold text-gray-900 sm:text-5xl tracking-tight">
-              {content.title}
-            </h2>
-          </div>
-          <div className={`mt-6 max-w-3xl mx-auto ${editableClasses}`} onClick={() => handleEditClick('description')}>
-            <span className={editButtonClasses}>Edit</span>
-            <p className="text-xl text-gray-600 leading-relaxed">
-              {content.description}
-            </p>
-          </div>
+          <h2 className="text-4xl font-bold text-gray-900 sm:text-5xl tracking-tight">
+            {content.title}
+          </h2>
+          <p className="mt-6 text-xl text-gray-600 leading-relaxed">
+            {content.description}
+          </p>
         </div>
 
         <div className="mt-20">
@@ -121,13 +105,9 @@ const AboutUsSection = ({ title, description, onUpdate }) => {
 
       <EditDialog
         isOpen={isEditing}
-        onClose={() => {
-          setIsEditing(false);
-          setEditingField(null);
-        }}
-        fields={getFieldsForType(editingField)}
-        values={content}
-        onChange={handleEdit}
+        onClose={() => setIsEditing(false)}
+        sectionType="about"
+        onGenerate={handleGenerate}
       />
     </section>
   );

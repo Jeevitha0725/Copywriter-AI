@@ -275,150 +275,152 @@ const Index = () => {
         company_description: formData.companyDescription,
         target_audience: formData.audience,
         tone_of_voice: formData.toneOfVoice,
-        selected_sections: selectedSections.map(section => section.id)
+        selected_sections: selectedSections.map((section) => section.id),
       };
 
-      // const response = await axios.post('http://127.0.0.1:5000/landing_page', requestBody);
+      const response = await axios.post('http://127.0.0.1:5000/landing_page', requestBody);
 
-      let d = {
-        "data": {
-          "about_us": {
-            "aboutUsSection": {
-              "description": "Wisework was founded on the principle of empowering businesses to reach their full potential. Our team of experts, with years of experience in the industry, understands the challenges of driving growth and success in a rapidly evolving market. We're dedicated to providing tailored solutions that streamline operations, amplify productivity, and unlock long-term success for our clients.",
-              "title": "Empowering Businesses to Thrive with Wisework's Innovative Solutions"
-            }
-          },
-          "features": {
-            "features": [
-              "Centralized Dashboard for Efficient Workflow Management",
-              "Customized Solutions Tailored to Your Business Needs",
-              "Seamless Integrations with Existing Systems and Processes",
-              "Comprehensive Consultation and Implementation Support",
-              "Dedicated Ongoing Support for Continuous Improvement",
-              "Streamlined Processes for Enhanced Productivity and Efficiency",
-              "Scalable Solutions to Drive Business Growth and Success",
-              "Access to Expert Resources and Knowledge Base",
-              "Flexible Pricing Plans to Fit Your Business Needs"
-            ]
-          },
-          "footer": {
-            "footer": {
-              "Company name": "Wisework",
-              "Links": [
-                {
-                  "label": "Home"
-                },
-                {
-                  "dropdown": [
-                    "Electronics",
-                    "Clothing",
-                    "Books",
-                    "Home & Garden"
-                  ],
-                  "label": "Products"
-                },
-                {
-                  "dropdown": [
-                    "Web Development",
-                    "Marketing",
-                    "Consulting"
-                  ],
-                  "label": "Services"
-                },
-                {
-                  "label": "About Us"
-                }
-              ]
-            }
-          },
-          "hero": {
-            "hero_section": {
-              "description": "Streamline your operations and unlock growth with Wisework's cutting-edge solutions, tailored to drive efficiency and productivity.",
-              "title": "Transform Your Workflow, Amplify Your Success"
-            }
-          },
-          "howitworks": {
-            "howItWorksSection": {
-              "description": "Take your business to new heights with Wisework. Our customized solutions and streamlined processes will help drive your success in a constantly evolving industry.",
-              "services": [
-                {
-                  "description": "Our team of experts will meet with you to understand your business needs and goals. We will discuss your design requirements, budget, and timeline.",
-                  "title": "Consultation"
-                },
-                {
-                  "description": "Based on our consultation, we will design a tailored solution for your business that aligns with your specific needs. This may include creating a new brand identity, developing marketing materials, or revamping your website.",
-                  "title": "Customized Solution"
-                },
-                {
-                  "description": "We will implement your customized solution, ensuring a seamless integration with your existing systems and processes.",
-                  "title": "Implementation"
-                },
-                {
-                  "description": "Our dedicated support team will provide ongoing assistance and maintenance to ensure your solution continues to meet your evolving business needs.",
-                  "title": "Ongoing Support"
-                }
-              ],
-              "title": "Elevate Your Business with Customized Solutions from Wisework"
-            }
-          },
-          "navigation": {
-            "navigation": [
-              {
-                "label": "Dashboard"
-              },
-              {
-                "dropdown": [
-                  "Solutions",
-                  "Integrations",
-                  "Pricing"
-                ],
-                "label": "Products"
-              },
-              {
-                "dropdown": [
-                  "Blog",
-                  "Webinars",
-                  "Help Center"
-                ],
-                "label": "Resources"
-              },
-              {
-                "label": "About Us"
-              },
-              {
-                "label": "Contact Us"
-              }
-            ]
-          },
-          "testimonials": {
-            "title": "Students Speak: The Power of Syncner",
-            "description": "Don't just take our word for it. Hear from students who have experienced the transformative power of working together with syncner.",
-            "testimonialLists": [
-              {
-                "comment": "Syncner has completely changed the way I approach group projects. It's amazing to see how it fosters collaboration and accountability among team members!",
-                "user": "Emily W.",
-                "company": "Harvard University"
-              },
-              {
-                "comment": "I was blown away by how syncner streamlined our workflow. It's the perfect tool for students looking to get more done in less time.",
-                "user": "Ryan T.",
-                "company": "Stanford University"
-              },
-              {
-                "comment": "Syncner is more than just a tool - it's a game-changer. It's helped me build stronger relationships with my classmates and improved our overall performance.",
-                "user": "Sophia L.",
-                "company": "University of California, Berkeley"
-              }
-            ]
-          },
-          "message": "Landing page details updated"
-        }
-      }
-      
+      // let d = {
+      //   data: {
+      //     about_us: {
+      //       aboutUsSection: {
+      //         description:
+      //           "Wisework was founded on the principle of empowering businesses to reach their full potential. Our team of experts, with years of experience in the industry, understands the challenges of driving growth and success in a rapidly evolving market. We're dedicated to providing tailored solutions that streamline operations, amplify productivity, and unlock long-term success for our clients.",
+      //         title:
+      //           "Empowering Businesses to Thrive with Wisework's Innovative Solutions",
+      //       },
+      //     },
+      //     features: {
+      //       features: [
+      //         "Centralized Dashboard for Efficient Workflow Management",
+      //         "Customized Solutions Tailored to Your Business Needs",
+      //         "Seamless Integrations with Existing Systems and Processes",
+      //         "Comprehensive Consultation and Implementation Support",
+      //         "Dedicated Ongoing Support for Continuous Improvement",
+      //         "Streamlined Processes for Enhanced Productivity and Efficiency",
+      //         "Scalable Solutions to Drive Business Growth and Success",
+      //         "Access to Expert Resources and Knowledge Base",
+      //         "Flexible Pricing Plans to Fit Your Business Needs",
+      //       ],
+      //     },
+      //     footer: {
+      //       footer: {
+      //         "Company name": "Wisework",
+      //         Links: [
+      //           {
+      //             label: "Home",
+      //           },
+      //           {
+      //             dropdown: [
+      //               "Electronics",
+      //               "Clothing",
+      //               "Books",
+      //               "Home & Garden",
+      //             ],
+      //             label: "Products",
+      //           },
+      //           {
+      //             dropdown: ["Web Development", "Marketing", "Consulting"],
+      //             label: "Services",
+      //           },
+      //           {
+      //             label: "About Us",
+      //           },
+      //         ],
+      //       },
+      //     },
+      //     hero: {
+      //       hero_section: {
+      //         description:
+      //           "Streamline your operations and unlock growth with Wisework's cutting-edge solutions, tailored to drive efficiency and productivity.",
+      //         title: "Transform Your Workflow, Amplify Your Success",
+      //       },
+      //     },
+      //     howitworks: {
+      //       howItWorksSection: {
+      //         description:
+      //           "Take your business to new heights with Wisework. Our customized solutions and streamlined processes will help drive your success in a constantly evolving industry.",
+      //         services: [
+      //           {
+      //             description:
+      //               "Our team of experts will meet with you to understand your business needs and goals. We will discuss your design requirements, budget, and timeline.",
+      //             title: "Consultation",
+      //           },
+      //           {
+      //             description:
+      //               "Based on our consultation, we will design a tailored solution for your business that aligns with your specific needs. This may include creating a new brand identity, developing marketing materials, or revamping your website.",
+      //             title: "Customized Solution",
+      //           },
+      //           {
+      //             description:
+      //               "We will implement your customized solution, ensuring a seamless integration with your existing systems and processes.",
+      //             title: "Implementation",
+      //           },
+      //           {
+      //             description:
+      //               "Our dedicated support team will provide ongoing assistance and maintenance to ensure your solution continues to meet your evolving business needs.",
+      //             title: "Ongoing Support",
+      //           },
+      //         ],
+      //         title:
+      //           "Elevate Your Business with Customized Solutions from Wisework",
+      //       },
+      //     },
+      //     navigation: {
+      //       navigation: [
+      //         {
+      //           label: "Dashboard",
+      //         },
+      //         {
+      //           dropdown: ["Solutions", "Integrations", "Pricing"],
+      //           label: "Products",
+      //         },
+      //         {
+      //           dropdown: ["Blog", "Webinars", "Help Center"],
+      //           label: "Resources",
+      //         },
+      //         {
+      //           label: "About Us",
+      //         },
+      //         {
+      //           label: "Contact Us",
+      //         },
+      //       ],
+      //     },
+      //     testimonials: {
+      //       title: "Students Speak: The Power of Syncner",
+      //       description:
+      //         "Don't just take our word for it. Hear from students who have experienced the transformative power of working together with syncner.",
+      //       testimonialLists: [
+      //         {
+      //           comment:
+      //             "Syncner has completely changed the way I approach group projects. It's amazing to see how it fosters collaboration and accountability among team members!",
+      //           user: "Emily W.",
+      //           company: "Harvard University",
+      //         },
+      //         {
+      //           comment:
+      //             "I was blown away by how syncner streamlined our workflow. It's the perfect tool for students looking to get more done in less time.",
+      //           user: "Ryan T.",
+      //           company: "Stanford University",
+      //         },
+      //         {
+      //           comment:
+      //             "Syncner is more than just a tool - it's a game-changer. It's helped me build stronger relationships with my classmates and improved our overall performance.",
+      //           user: "Sophia L.",
+      //           company: "University of California, Berkeley",
+      //         },
+      //       ],
+      //     },
+      //     message: "Landing page details updated",
+      //   },
+      // };
+
       // if (response.data && response.data.data) {
-        // console.log("response.data.data", response.data.data)
-        setData(d.data);
-        setShowForm(false);
+      console.log("response.data.data", response.data.data)
+      // setData(d.data);
+      setData(response.data.data);
+      setShowForm(false);
       // }
     } catch (error) {
       console.error("Error creating page:", error);
@@ -489,8 +491,6 @@ const Index = () => {
 
           <div className="bg-white rounded-lg shadow p-6">
             <div className="grid grid-cols-2 gap-6">
-              
-
               <div className="col-span-1">
                 <label className="block text-sm font-medium text-gray-700">
                   Tone of voice
@@ -556,7 +556,6 @@ const Index = () => {
                   className="mt-1 block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-indigo-500 focus:outline-none text-black"
                 />
               </div>
-
 
               <div className="col-span-2">
                 <label className="block text-sm font-medium text-gray-700">

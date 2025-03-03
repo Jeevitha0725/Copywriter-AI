@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 import cw_landingpage, cw_aboutus  # Import response.py file
 import requests  # Import requests to send data to our own Flask server
 

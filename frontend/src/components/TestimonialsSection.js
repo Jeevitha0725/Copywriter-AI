@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import EditDialog from './EditDialog';
+import GenerateButton from './GenerateButton';
 
 const TestimonialsSection = ({ title, description, testimonialLists, onUpdate }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [editingField, setEditingField] = useState(null);
   const [content, setContent] = useState({ title, description, testimonialLists });
 
   const handleEdit = (key, value) => {
@@ -16,7 +16,6 @@ const TestimonialsSection = ({ title, description, testimonialLists, onUpdate })
   };
 
   const handleEditClick = (field) => {
-    setEditingField(field);
     setIsEditing(true);
   };
 
@@ -37,33 +36,65 @@ const TestimonialsSection = ({ title, description, testimonialLists, onUpdate })
     }
   };
 
-  const editableClasses = "relative group cursor-pointer border-2 border-transparent hover:border-blue-500 rounded-lg transition-all duration-200 p-2";
-  const editButtonClasses = "opacity-0 group-hover:opacity-100 absolute -top-3 -right-3 bg-blue-500 text-white px-2 py-1 rounded-full text-xs font-medium shadow-sm transition-opacity duration-200 z-10";
+  const handleGenerate = async (sectionType, formData) => {
+    try {
+      // TODO: Implement API call to generate content
+      // const response = await generateSectionContent(sectionType, formData);
+      // const newContent = response.data;
+      // setContent(newContent);
+      // onUpdate?.(newContent);
+      
+      // Temporary mock data
+      const mockResponse = {
+        title: "What Our Clients Say",
+        description: "Discover how we've helped businesses transform their digital presence",
+        testimonialLists: [
+          {
+            comment: "The AI-powered content generation has revolutionized our marketing strategy. We've seen a 200% increase in engagement!",
+            user: "Sarah Johnson",
+            company: "TechStart Inc."
+          },
+          {
+            comment: "This platform has saved us countless hours in content creation. The quality and consistency are outstanding.",
+            user: "Michael Chen",
+            company: "Digital Solutions"
+          },
+          {
+            comment: "The best investment we've made in our content strategy. The results speak for themselves.",
+            user: "Emma Davis",
+            company: "Growth Marketing"
+          }
+        ]
+      };
+      
+      setContent(mockResponse);
+      onUpdate?.(mockResponse);
+    } catch (error) {
+      console.error('Error generating content:', error);
+      throw error;
+    }
+  };
 
   return (
-    <section className="py-16 bg-white">
+    <section className="py-16 bg-white relative group">
+      <GenerateButton onClick={() => setIsEditing(true)} />
+      
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center">
-          <div className={`${editableClasses}`} onClick={() => handleEditClick('title')}>
-            <span className={editButtonClasses}>Edit</span>
-            <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
-              {content.title}
-            </h2>
-          </div>
-          <div className={`mt-4 text-xl text-gray-500 ${editableClasses}`} onClick={() => handleEditClick('description')}>
-            <span className={editButtonClasses}>Edit</span>
-            <p>{content.description}</p>
-          </div>
+          <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+            {content.title}
+          </h2>
+          <p className="mt-4 text-xl text-gray-500">
+            {content.description}
+          </p>
         </div>
 
         <div className="mt-12 grid gap-8 lg:grid-cols-3">
           {content.testimonialLists.map((testimonial, index) => (
             <div
               key={index}
-              className={`bg-gray-50 rounded-lg p-8 ${editableClasses}`}
-              onClick={() => handleEditClick({ type: 'testimonial', index })}
+              className="bg-gray-50 rounded-lg p-8"
             >
-              <span className={editButtonClasses}>Edit</span>
               <div className="relative">
                 <svg
                   className="absolute -top-4 -left-4 h-8 w-8 text-indigo-500"
@@ -86,26 +117,9 @@ const TestimonialsSection = ({ title, description, testimonialLists, onUpdate })
 
       <EditDialog
         isOpen={isEditing}
-        onClose={() => {
-          setIsEditing(false);
-          setEditingField(null);
-        }}
-        fields={getFieldsForType(editingField?.type || editingField)}
-        values={editingField?.type === 'testimonial' 
-          ? content.testimonialLists[editingField.index]
-          : content}
-        onChange={(key, value) => {
-          if (editingField?.type === 'testimonial') {
-            const newTestimonials = [...content.testimonialLists];
-            newTestimonials[editingField.index] = {
-              ...newTestimonials[editingField.index],
-              [key]: value
-            };
-            handleEdit('testimonialLists', newTestimonials);
-          } else {
-            handleEdit(key, value);
-          }
-        }}
+        onClose={() => setIsEditing(false)}
+        sectionType="testimonials"
+        onGenerate={handleGenerate}
       />
     </section>
   );
