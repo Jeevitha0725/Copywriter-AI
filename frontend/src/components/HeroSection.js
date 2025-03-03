@@ -1,78 +1,76 @@
 import React, { useState } from 'react';
 import EditDialog from './EditDialog';
+import GenerateButton from './GenerateButton';
 
 const HeroSection = ({ title, description, onUpdate }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [editingField, setEditingField] = useState(null);
   const [content, setContent] = useState({ title, description });
 
-  const handleEdit = (key, value) => {
-    const newContent = {
-      ...content,
-      [key]: value
-    };
-    setContent(newContent);
-    onUpdate?.(newContent);
-  };
-
-  const handleEditClick = (field) => {
-    setEditingField(field);
-    setIsEditing(true);
-  };
-
-  const getFieldsForType = (type) => {
-    switch (type) {
-      case 'title':
-        return [{ key: 'title', label: 'Title', type: 'text' }];
-      case 'description':
-        return [{ key: 'description', label: 'Description', type: 'textarea' }];
-      default:
-        return [];
+  const handleGenerate = async (sectionType, formData) => {
+    try {
+      // TODO: Implement API call to generate content
+      // const response = await generateSectionContent(sectionType, formData);
+      // const newContent = response.data;
+      // setContent(newContent);
+      // onUpdate?.(newContent);
+      
+      // Temporary mock data
+      const mockResponse = {
+        title: "Transform Your Business with AI-Powered Solutions",
+        description: "Unlock the full potential of your business with our cutting-edge AI technology. Streamline operations, boost productivity, and drive growth with intelligent automation."
+      };
+      
+      setContent(mockResponse);
+      onUpdate?.(mockResponse);
+    } catch (error) {
+      console.error('Error generating content:', error);
+      throw error;
     }
   };
 
-  // Common classes for editable elements
-  const editableClasses = "relative group cursor-pointer border-2 border-transparent hover:border-blue-500 rounded-lg transition-all duration-200 p-2";
-  const editButtonClasses = "opacity-0 group-hover:opacity-100 absolute -top-3 -right-3 bg-blue-500 text-white px-2 py-1 rounded-full text-xs font-medium shadow-sm transition-opacity duration-200 z-10";
-
   return (
-    <section className="bg-white pt-24 pb-12 sm:pt-32 sm:pb-16 lg:pt-40 lg:pb-24">
+    <section className="relative bg-gradient-to-br from-indigo-50 via-white to-purple-50 overflow-hidden group">
+      <GenerateButton onClick={() => setIsEditing(true)} />
+      
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center space-y-8">
-          {/* Title */}
-          <h1 
-            className={`text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl md:text-6xl ${editableClasses}`}
-            onClick={() => handleEditClick('title')}
-          >
-            <span className={editButtonClasses}>Edit</span>
-            {content.title}
-          </h1>
-
-          {/* Description */}
-          <p 
-            className={`max-w-2xl mx-auto text-xl text-gray-500 ${editableClasses}`}
-            onClick={() => handleEditClick('description')}
-          >
-            <span className={editButtonClasses}>Edit</span>
-            {content.description}
-          </p>
-          
-          {/* CTA Button */}
-          <button className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 transition-colors duration-200">
-            Get Started
-          </button>
+        <div className="relative z-10 py-16 sm:py-24">
+          <div className="text-center">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 tracking-tight">
+              {content.title}
+            </h1>
+            <p className="mt-6 text-xl text-gray-600 leading-relaxed">
+              {content.description}
+            </p>
+            <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
+              <a
+                href="#"
+                className="inline-flex items-center justify-center px-8 py-4 border border-transparent text-base font-medium rounded-full text-white bg-indigo-600 hover:bg-indigo-700 transition-colors duration-200 shadow-lg hover:shadow-xl"
+              >
+                Get Started
+              </a>
+              <a
+                href="#"
+                className="inline-flex items-center justify-center px-8 py-4 border-2 border-indigo-600 text-base font-medium rounded-full text-indigo-600 bg-white hover:bg-indigo-50 transition-colors duration-200"
+              >
+                Learn More
+              </a>
+            </div>
+          </div>
         </div>
+      </div>
+      
+      {/* Decorative background elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-indigo-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
+        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-80 h-80 bg-pink-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
       </div>
 
       <EditDialog
         isOpen={isEditing}
-        onClose={() => {
-          setIsEditing(false);
-          setEditingField(null);
-        }}
-        fields={getFieldsForType(editingField)}
-        values={content}
-        onChange={handleEdit}
+        onClose={() => setIsEditing(false)}
+        sectionType="hero"
+        onGenerate={handleGenerate}
       />
     </section>
   );
