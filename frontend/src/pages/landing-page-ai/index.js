@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import Layout from "@/components/Layout";
@@ -7,6 +8,8 @@ import HeroSection from "@/components/HeroSection";
 import HowItWorksSection from "@/components/HowItWorksSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import AboutUsSection from "@/components/AboutUsSection";
+import FeaturesSection from "@/components/FeaturesSection";
+import Footer from "@/components/Footer";
 
 const DraggableSection = ({ section, index, moveSection, removeSection }) => {
   const [{ isDragging }, drag] = useDrag({
@@ -50,12 +53,10 @@ const DraggableSection = ({ section, index, moveSection, removeSection }) => {
 const Index = () => {
   const [showForm, setShowForm] = useState(true);
   const [formData, setFormData] = useState({
-    language: "English (US)",
     toneOfVoice: "Professional",
     companyName: "",
     companyType: "",
     audience: "",
-    mainColor: "blue",
     companyDescription: "",
   });
 
@@ -145,43 +146,47 @@ const Index = () => {
   const availableSections = [
     { id: "navigation", label: "Navigation/Menu" },
     { id: "hero", label: "Hero Section/Header" },
-    // { id: 'logos', label: 'Logos (Trusted by, Some of your customers,...)' },
-    { id: "how-it-works", label: "How it works" },
+    { id: "howitworks", label: "How it works" },
     { id: "features", label: "Features" },
-    // { id: 'faq', label: 'FAQ (Frequently Asked Questions)' },
     { id: "testimonials", label: "Testimonials" },
-    { id: "about", label: "About us" },
+    { id: "about_us", label: "About us" },
     { id: "footer", label: "Footer" },
   ];
 
   const sectionComponents = [
     {
-      key: "headerSection",
-      component: data.headerSection && (
+      key: "navigation",
+      component: data.navigation && (
         <HeaderSection
-          logo={data.headerSection.logo}
-          links={data.headerSection.links}
+          logo={formData.companyName}
+          links={data.navigation.navigation}
         />
       ),
     },
     {
-      key: "heroSection",
-      component: data.heroSection && (
+      key: "hero",
+      component: data.hero && (
         <HeroSection
-          title={data.heroSection.title}
-          description={data.heroSection.description}
-          onUpdate={(updates) => handleSectionUpdate("heroSection", updates)}
+          title={data.hero.hero_section.title}
+          description={data.hero.hero_section.description}
+          onUpdate={(updates) => handleSectionUpdate("hero", updates)}
         />
       ),
     },
     {
-      key: "howItWorksSection",
-      component: data.howItWorksSection && (
+      key: "howitworks",
+      component: data.howitworks && (
         <HowItWorksSection
-          title={data.howItWorksSection.title}
-          description={data.howItWorksSection.description}
-          services={data.howItWorksSection.services}
+          title={data.howitworks.howItWorksSection.title}
+          description={data.howitworks.howItWorksSection.description}
+          services={data.howitworks.howItWorksSection.services}
         />
+      ),
+    },
+    {
+      key: "features",
+      component: data.features && (
+        <FeaturesSection features={data.features.features} />
       ),
     },
     {
@@ -195,11 +200,20 @@ const Index = () => {
       ),
     },
     {
-      key: "aboutUsSection",
-      component: data.aboutUsSection && (
+      key: "about_us",
+      component: data.about_us && (
         <AboutUsSection
-          title={data.aboutUsSection.title}
-          description={data.aboutUsSection.description}
+          title={data.about_us.aboutUsSection.title}
+          description={data.about_us.aboutUsSection.description}
+        />
+      ),
+    },
+    {
+      key: "footer",
+      component: data.footer && (
+        <Footer
+          companyName={data.footer.footer["Company name"]}
+          links={data.footer.footer.Links}
         />
       ),
     },
@@ -255,24 +269,157 @@ const Index = () => {
   const handleCreatePage = async () => {
     setIsLoading(true);
     try {
-      // Log all form data
-      console.log("Form Data:", {
-        language: formData.language,
-        toneOfVoice: formData.toneOfVoice,
-        companyName: formData.companyName,
-        companyType: formData.companyType,
-        audience: formData.audience,
-        mainColor: formData.mainColor,
-        companyDescription: formData.companyDescription,
-        selectedSections: selectedSections.map((section) => ({
-          id: section.id,
-          label: section.label,
-        })),
-      });
+      const requestBody = {
+        company_name: formData.companyName,
+        company_type: formData.companyType,
+        company_description: formData.companyDescription,
+        target_audience: formData.audience,
+        tone_of_voice: formData.toneOfVoice,
+        selected_sections: selectedSections.map(section => section.id)
+      };
 
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      setShowForm(false);
+      // const response = await axios.post('http://127.0.0.1:5000/landing_page', requestBody);
+
+      let d = {
+        "data": {
+          "about_us": {
+            "aboutUsSection": {
+              "description": "Wisework was founded on the principle of empowering businesses to reach their full potential. Our team of experts, with years of experience in the industry, understands the challenges of driving growth and success in a rapidly evolving market. We're dedicated to providing tailored solutions that streamline operations, amplify productivity, and unlock long-term success for our clients.",
+              "title": "Empowering Businesses to Thrive with Wisework's Innovative Solutions"
+            }
+          },
+          "features": {
+            "features": [
+              "Centralized Dashboard for Efficient Workflow Management",
+              "Customized Solutions Tailored to Your Business Needs",
+              "Seamless Integrations with Existing Systems and Processes",
+              "Comprehensive Consultation and Implementation Support",
+              "Dedicated Ongoing Support for Continuous Improvement",
+              "Streamlined Processes for Enhanced Productivity and Efficiency",
+              "Scalable Solutions to Drive Business Growth and Success",
+              "Access to Expert Resources and Knowledge Base",
+              "Flexible Pricing Plans to Fit Your Business Needs"
+            ]
+          },
+          "footer": {
+            "footer": {
+              "Company name": "Wisework",
+              "Links": [
+                {
+                  "label": "Home"
+                },
+                {
+                  "dropdown": [
+                    "Electronics",
+                    "Clothing",
+                    "Books",
+                    "Home & Garden"
+                  ],
+                  "label": "Products"
+                },
+                {
+                  "dropdown": [
+                    "Web Development",
+                    "Marketing",
+                    "Consulting"
+                  ],
+                  "label": "Services"
+                },
+                {
+                  "label": "About Us"
+                }
+              ]
+            }
+          },
+          "hero": {
+            "hero_section": {
+              "description": "Streamline your operations and unlock growth with Wisework's cutting-edge solutions, tailored to drive efficiency and productivity.",
+              "title": "Transform Your Workflow, Amplify Your Success"
+            }
+          },
+          "howitworks": {
+            "howItWorksSection": {
+              "description": "Take your business to new heights with Wisework. Our customized solutions and streamlined processes will help drive your success in a constantly evolving industry.",
+              "services": [
+                {
+                  "description": "Our team of experts will meet with you to understand your business needs and goals. We will discuss your design requirements, budget, and timeline.",
+                  "title": "Consultation"
+                },
+                {
+                  "description": "Based on our consultation, we will design a tailored solution for your business that aligns with your specific needs. This may include creating a new brand identity, developing marketing materials, or revamping your website.",
+                  "title": "Customized Solution"
+                },
+                {
+                  "description": "We will implement your customized solution, ensuring a seamless integration with your existing systems and processes.",
+                  "title": "Implementation"
+                },
+                {
+                  "description": "Our dedicated support team will provide ongoing assistance and maintenance to ensure your solution continues to meet your evolving business needs.",
+                  "title": "Ongoing Support"
+                }
+              ],
+              "title": "Elevate Your Business with Customized Solutions from Wisework"
+            }
+          },
+          "navigation": {
+            "navigation": [
+              {
+                "label": "Dashboard"
+              },
+              {
+                "dropdown": [
+                  "Solutions",
+                  "Integrations",
+                  "Pricing"
+                ],
+                "label": "Products"
+              },
+              {
+                "dropdown": [
+                  "Blog",
+                  "Webinars",
+                  "Help Center"
+                ],
+                "label": "Resources"
+              },
+              {
+                "label": "About Us"
+              },
+              {
+                "label": "Contact Us"
+              }
+            ]
+          },
+          "testimonials": {
+            "title": "Students Speak: The Power of Syncner",
+            "description": "Don't just take our word for it. Hear from students who have experienced the transformative power of working together with syncner.",
+            "testimonialLists": [
+              {
+                "comment": "Syncner has completely changed the way I approach group projects. It's amazing to see how it fosters collaboration and accountability among team members!",
+                "user": "Emily W.",
+                "company": "Harvard University"
+              },
+              {
+                "comment": "I was blown away by how syncner streamlined our workflow. It's the perfect tool for students looking to get more done in less time.",
+                "user": "Ryan T.",
+                "company": "Stanford University"
+              },
+              {
+                "comment": "Syncner is more than just a tool - it's a game-changer. It's helped me build stronger relationships with my classmates and improved our overall performance.",
+                "user": "Sophia L.",
+                "company": "University of California, Berkeley"
+              }
+            ]
+          },
+          "message": "Landing page details updated"
+        }
+      }
+      
+      // if (response.data && response.data.data) {
+        // console.log("response.data.data", response.data.data)
+        setData(d.data);
+        setShowForm(false);
+      // }
     } catch (error) {
       console.error("Error creating page:", error);
     } finally {
@@ -342,19 +489,7 @@ const Index = () => {
 
           <div className="bg-white rounded-lg shadow p-6">
             <div className="grid grid-cols-2 gap-6">
-              <div className="col-span-1">
-                <label className="block text-sm font-medium text-gray-700">
-                  Language
-                </label>
-                <select
-                  name="language"
-                  value={formData.language}
-                  onChange={handleInputChange}
-                  className="mt-1 block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-indigo-500 focus:outline-none text-black"
-                >
-                  <option value="English (US)">English (US)</option>
-                </select>
-              </div>
+              
 
               <div className="col-span-1">
                 <label className="block text-sm font-medium text-gray-700">
@@ -367,6 +502,14 @@ const Index = () => {
                   className="mt-1 block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-indigo-500 focus:outline-none text-black"
                 >
                   <option value="Professional">Professional</option>
+                  <option value="Childish">Childish</option>
+                  <option value="Luxurious">Luxurious</option>
+                  <option value="Friendly">Friendly</option>
+                  <option value="Formal">Formal</option>
+                  <option value="Humorous">Humorous</option>
+                  <option value="Confident">Confident</option>
+                  <option value="Exciting">Exciting</option>
+                  <option value="Surprised">Surprised</option>
                 </select>
               </div>
 
@@ -414,27 +557,6 @@ const Index = () => {
                 />
               </div>
 
-              <div className="col-span-1">
-                <label className="block text-sm font-medium text-gray-700">
-                  Main Color*
-                </label>
-                <div className="mt-1 flex items-center">
-                  <div
-                    className="w-8 h-8 rounded-md border border-gray-300"
-                    style={{ backgroundColor: formData.mainColor }}
-                  />
-                  <select
-                    name="mainColor"
-                    value={formData.mainColor}
-                    onChange={handleInputChange}
-                    className="ml-2 block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-indigo-500 focus:outline-none text-black"
-                  >
-                    <option value="blue">Blue</option>
-                    <option value="red">Red</option>
-                    <option value="green">Green</option>
-                  </select>
-                </div>
-              </div>
 
               <div className="col-span-2">
                 <label className="block text-sm font-medium text-gray-700">

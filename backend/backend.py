@@ -1,8 +1,10 @@
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 import cw_landingpage  # Import response.py file
 import requests  # Import requests to send data to our own Flask server
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
 
 @app.route('/landing_page', methods=['POST'])
 def landing_page():

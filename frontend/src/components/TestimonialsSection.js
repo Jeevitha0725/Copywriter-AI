@@ -28,7 +28,7 @@ const TestimonialsSection = ({ title, description, testimonialLists, onUpdate })
         return [{ key: 'description', label: 'Description', type: 'textarea' }];
       case 'testimonial':
         return [
-          { key: 'comment', label: 'Testimonial', type: 'textarea' },
+          { key: 'comment', label: 'Comment', type: 'textarea' },
           { key: 'user', label: 'User Name', type: 'text' },
           { key: 'company', label: 'Company', type: 'text' }
         ];
@@ -41,49 +41,43 @@ const TestimonialsSection = ({ title, description, testimonialLists, onUpdate })
   const editButtonClasses = "opacity-0 group-hover:opacity-100 absolute -top-3 -right-3 bg-blue-500 text-white px-2 py-1 rounded-full text-xs font-medium shadow-sm transition-opacity duration-200 z-10";
 
   return (
-    <section className="bg-gradient-to-b from-gray-50 to-white py-20 sm:py-32">
+    <section className="py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 
-            className={`text-3xl font-extrabold text-gray-900 sm:text-4xl ${editableClasses}`}
-            onClick={() => handleEditClick('title')}
-          >
+        <div className="text-center">
+          <div className={`${editableClasses}`} onClick={() => handleEditClick('title')}>
             <span className={editButtonClasses}>Edit</span>
-            {content.title}
-          </h2>
-          <p 
-            className={`mt-4 max-w-2xl mx-auto text-lg text-gray-600 ${editableClasses}`}
-            onClick={() => handleEditClick('description')}
-          >
+            <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+              {content.title}
+            </h2>
+          </div>
+          <div className={`mt-4 text-xl text-gray-500 ${editableClasses}`} onClick={() => handleEditClick('description')}>
             <span className={editButtonClasses}>Edit</span>
-            {content.description}
-          </p>
+            <p>{content.description}</p>
+          </div>
         </div>
 
-        <div className="grid gap-8 lg:grid-cols-3 sm:grid-cols-2">
+        <div className="mt-12 grid gap-8 lg:grid-cols-3">
           {content.testimonialLists.map((testimonial, index) => (
-            <div 
+            <div
               key={index}
-              className={`bg-white p-8 rounded-lg shadow-lg ${editableClasses}`}
-              onClick={() => {
-                setEditingField({ type: 'testimonial', index });
-                setIsEditing(true);
-              }}
+              className={`bg-gray-50 rounded-lg p-8 ${editableClasses}`}
+              onClick={() => handleEditClick({ type: 'testimonial', index })}
             >
               <span className={editButtonClasses}>Edit</span>
-              <p className="text-gray-700 text-lg mb-6">"{testimonial.comment}"</p>
-              <div className="flex items-center">
-                {testimonial.avatar && (
-                  <img 
-                    src={testimonial.avatar} 
-                    alt={testimonial.user}
-                    className="h-12 w-12 rounded-full mr-4"
-                  />
-                )}
-                <div>
-                  <div className="font-semibold text-gray-900">{testimonial.user}</div>
-                  <div className="text-indigo-600 text-sm">{testimonial.company}</div>
-                </div>
+              <div className="relative">
+                <svg
+                  className="absolute -top-4 -left-4 h-8 w-8 text-indigo-500"
+                  fill="currentColor"
+                  viewBox="0 0 32 32"
+                  aria-hidden="true"
+                >
+                  <path d="M9.352 4C4.456 7.456 1 13.12 1 19.36c0 5.088 3.072 8.064 6.624 8.064 3.36 0 5.856-2.688 5.856-5.856 0-3.168-2.208-5.472-5.088-5.472-.576 0-1.344.096-1.536.192.48-3.264 3.552-7.104 6.624-9.024L9.352 4zm16.512 0c-4.8 3.456-8.256 9.12-8.256 15.36 0 5.088 3.072 8.064 6.624 8.064 3.264 0 5.856-2.688 5.856-5.856 0-3.168-2.304-5.472-5.184-5.472-.576 0-1.248.096-1.44.192.48-3.264 3.456-7.104 6.528-9.024L25.864 4z" />
+                </svg>
+                <p className="relative text-gray-600">{testimonial.comment}</p>
+              </div>
+              <div className="mt-6">
+                <p className="text-base font-semibold text-gray-900">{testimonial.user}</p>
+                <p className="text-sm text-gray-500">{testimonial.company}</p>
               </div>
             </div>
           ))}
@@ -98,7 +92,7 @@ const TestimonialsSection = ({ title, description, testimonialLists, onUpdate })
         }}
         fields={getFieldsForType(editingField?.type || editingField)}
         values={editingField?.type === 'testimonial' 
-          ? content.testimonialLists[editingField.index] 
+          ? content.testimonialLists[editingField.index]
           : content}
         onChange={(key, value) => {
           if (editingField?.type === 'testimonial') {
