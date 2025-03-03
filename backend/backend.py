@@ -17,11 +17,11 @@ def landing_page():
     selected_sections = data.get('selected_sections', [])
 
     # Pass data to cw_landingpage
-    cw_landingpage.set_company_details(
+    res = cw_landingpage.set_company_details(
         company_name, company_type, company_description, audience, tone_of_voice, selected_sections
     )
 
-    return jsonify({"message": "Landing page details updated", "data": cw_landingpage.parsed_json})
+    return jsonify({"message": "Landing page details updated", "data": res})
 
 @app.route('/landing_page', methods=['GET'])
 def get_landing_page():
