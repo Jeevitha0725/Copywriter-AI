@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { DndProvider, useDrag, useDrop } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
+import React, { useState, useEffect } from "react";
+import { DndProvider, useDrag, useDrop } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 import Layout from "@/components/Layout";
-import HeaderSection from '@/components/HeaderSection';
-import HeroSection from '@/components/HeroSection';
-import HowItWorksSection from '@/components/HowItWorksSection';
-import TestimonialsSection from '@/components/TestimonialsSection';
-import AboutUsSection from '@/components/AboutUsSection';
+import HeaderSection from "@/components/HeaderSection";
+import HeroSection from "@/components/HeroSection";
+import HowItWorksSection from "@/components/HowItWorksSection";
+import TestimonialsSection from "@/components/TestimonialsSection";
+import AboutUsSection from "@/components/AboutUsSection";
 
 const DraggableSection = ({ section, index, moveSection, removeSection }) => {
   const [{ isDragging }, drag] = useDrag({
-    type: 'section',
+    type: "section",
     item: { index },
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
@@ -18,7 +18,7 @@ const DraggableSection = ({ section, index, moveSection, removeSection }) => {
   });
 
   const [, drop] = useDrop({
-    accept: 'section',
+    accept: "section",
     hover: (draggedItem) => {
       if (draggedItem.index !== index) {
         moveSection(draggedItem.index, index);
@@ -31,9 +31,9 @@ const DraggableSection = ({ section, index, moveSection, removeSection }) => {
     <div
       ref={(node) => drag(drop(node))}
       className={`flex items-center p-3 bg-gray-50 rounded-md ${
-        isDragging ? 'opacity-50' : ''
-        }`}
-      style={{cursor: "grab"}}
+        isDragging ? "opacity-50" : ""
+      }`}
+      style={{ cursor: "grab" }}
     >
       <span className="mr-2 text-gray-500 cursor-move">≡</span>
       <span className="text-black">{section.label}</span>
@@ -50,19 +50,16 @@ const DraggableSection = ({ section, index, moveSection, removeSection }) => {
 const Index = () => {
   const [showForm, setShowForm] = useState(true);
   const [formData, setFormData] = useState({
-    language: 'English (US)',
-    toneOfVoice: 'Professional',
-    companyName: '',
-    companyType: '',
-    audience: '',
-    mainColor: 'blue',
-    companyDescription: ''
+    language: "English (US)",
+    toneOfVoice: "Professional",
+    companyName: "",
+    companyType: "",
+    audience: "",
+    mainColor: "blue",
+    companyDescription: "",
   });
 
-  const [selectedSections, setSelectedSections] = useState([
-    { id: 'content', label: 'Content' },
-    { id: 'cta', label: 'Calls to action (Start Free Trial, Sign Up,...)' }
-  ]);
+  const [selectedSections, setSelectedSections] = useState([]);
 
   const [characterCount, setCharacterCount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -131,12 +128,12 @@ const Index = () => {
   }, []);
 
   const handleSectionUpdate = (sectionKey, updatedData) => {
-    setData(prev => ({
+    setData((prev) => ({
       ...prev,
       [sectionKey]: {
         ...prev[sectionKey],
-        ...updatedData
-      }
+        ...updatedData,
+      },
     }));
   };
 
@@ -146,70 +143,80 @@ const Index = () => {
   }
 
   const availableSections = [
-    { id: 'navigation', label: 'Navigation/Menu' },
-    { id: 'hero', label: 'Hero Section/Header' },
-    { id: 'logos', label: 'Logos (Trusted by, Some of your customers,...)' },
-    { id: 'how-it-works', label: 'How it works' },
-    { id: 'features', label: 'Features' },
-    { id: 'pricing', label: 'Pricing' },
-    { id: 'blog', label: 'Recent Blog Posts' },
-    { id: 'faq', label: 'FAQ (Frequently Asked Questions)' },
-    { id: 'testimonials', label: 'Testimonials' },
-    { id: 'content', label: 'Content' },
-    { id: 'statistics', label: 'Statistics (Number of Users, Satisfied Customers,...)' },
-    { id: 'cta', label: 'Calls to action (Start Free Trial, Sign Up,...)' },
-    { id: 'about', label: 'About us' },
-    { id: 'footer', label: 'Footer' }
+    { id: "navigation", label: "Navigation/Menu" },
+    { id: "hero", label: "Hero Section/Header" },
+    // { id: 'logos', label: 'Logos (Trusted by, Some of your customers,...)' },
+    { id: "how-it-works", label: "How it works" },
+    { id: "features", label: "Features" },
+    // { id: 'faq', label: 'FAQ (Frequently Asked Questions)' },
+    { id: "testimonials", label: "Testimonials" },
+    { id: "about", label: "About us" },
+    { id: "footer", label: "Footer" },
   ];
 
   const sectionComponents = [
-    { key: 'headerSection', component: data.headerSection && (
-      <HeaderSection
-        logo={data.headerSection.logo}
-        links={data.headerSection.links}
-      />
-    )},
-    { key: 'heroSection', component: data.heroSection && (
-      <HeroSection
-        title={data.heroSection.title}
-        description={data.heroSection.description}
-        onUpdate={(updates) => handleSectionUpdate('heroSection', updates)}
-      />
-    )},
-    { key: 'howItWorksSection', component: data.howItWorksSection && (
-      <HowItWorksSection
-        title={data.howItWorksSection.title}
-        description={data.howItWorksSection.description}
-        services={data.howItWorksSection.services}
-      />
-    )},
-    { key: 'testimonials', component: data.testimonials && (
-      <TestimonialsSection
-        title={data.testimonials.title}
-        description={data.testimonials.description}
-        testimonialLists={data.testimonials.testimonialLists}
-      />
-    )},
-    { key: 'aboutUsSection', component: data.aboutUsSection && (
-      <AboutUsSection
-        title={data.aboutUsSection.title}
-        description={data.aboutUsSection.description}
-      />
-    )}
+    {
+      key: "headerSection",
+      component: data.headerSection && (
+        <HeaderSection
+          logo={data.headerSection.logo}
+          links={data.headerSection.links}
+        />
+      ),
+    },
+    {
+      key: "heroSection",
+      component: data.heroSection && (
+        <HeroSection
+          title={data.heroSection.title}
+          description={data.heroSection.description}
+          onUpdate={(updates) => handleSectionUpdate("heroSection", updates)}
+        />
+      ),
+    },
+    {
+      key: "howItWorksSection",
+      component: data.howItWorksSection && (
+        <HowItWorksSection
+          title={data.howItWorksSection.title}
+          description={data.howItWorksSection.description}
+          services={data.howItWorksSection.services}
+        />
+      ),
+    },
+    {
+      key: "testimonials",
+      component: data.testimonials && (
+        <TestimonialsSection
+          title={data.testimonials.title}
+          description={data.testimonials.description}
+          testimonialLists={data.testimonials.testimonialLists}
+        />
+      ),
+    },
+    {
+      key: "aboutUsSection",
+      component: data.aboutUsSection && (
+        <AboutUsSection
+          title={data.aboutUsSection.title}
+          description={data.aboutUsSection.description}
+        />
+      ),
+    },
   ];
 
-  const availableSectionsRes = sectionComponents.filter(section => 
-    data[section.key] && section.component
+  const availableSectionsRes = sectionComponents.filter(
+    (section) => data[section.key] && section.component
   );
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
 
-    if (name === 'companyDescription') {
+    if (name === "companyDescription") {
       setCharacterCount(value.length);
     }
   };
@@ -218,17 +225,22 @@ const Index = () => {
     const sectionId = e.target.value;
     if (!sectionId) return;
 
-    const section = availableSections.find(s => s.id === sectionId);
-    if (section && !selectedSections.some(s => s.id === sectionId)) {
+    const section = availableSections.find((s) => s.id === sectionId);
+    if (section && !selectedSections.some((s) => s.id === sectionId)) {
       if (selectedSections.length < 8) {
-        setSelectedSections(prev => [...prev, { id: sectionId, label: section.label }]);
+        setSelectedSections((prev) => [
+          ...prev,
+          { id: sectionId, label: section.label },
+        ]);
       }
     }
-    e.target.value = ''; // Reset dropdown after selection
+    e.target.value = ""; // Reset dropdown after selection
   };
 
   const removeSection = (sectionId) => {
-    setSelectedSections(prev => prev.filter(section => section.id !== sectionId));
+    setSelectedSections((prev) =>
+      prev.filter((section) => section.id !== sectionId)
+    );
   };
 
   const moveSection = (fromIndex, toIndex) => {
@@ -244,7 +256,7 @@ const Index = () => {
     setIsLoading(true);
     try {
       // Log all form data
-      console.log('Form Data:', {
+      console.log("Form Data:", {
         language: formData.language,
         toneOfVoice: formData.toneOfVoice,
         companyName: formData.companyName,
@@ -252,17 +264,17 @@ const Index = () => {
         audience: formData.audience,
         mainColor: formData.mainColor,
         companyDescription: formData.companyDescription,
-        selectedSections: selectedSections.map(section => ({
+        selectedSections: selectedSections.map((section) => ({
           id: section.id,
-          label: section.label
-        }))
+          label: section.label,
+        })),
       });
 
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       setShowForm(false);
     } catch (error) {
-      console.error('Error creating page:', error);
+      console.error("Error creating page:", error);
     } finally {
       setIsLoading(false);
     }
@@ -276,7 +288,9 @@ const Index = () => {
             <div className="bg-white rounded-lg shadow">
               <div className="p-6 border-b border-gray-200">
                 <div className="flex justify-between items-center">
-                  <h2 className="text-xl font-semibold text-gray-900">Generated Landing Page</h2>
+                  <h2 className="text-xl font-semibold text-gray-900">
+                    Generated Landing Page
+                  </h2>
                   <button
                     onClick={() => setShowForm(true)}
                     className="text-sm text-indigo-600 hover:text-indigo-800"
@@ -288,20 +302,20 @@ const Index = () => {
               <div className="p-6">
                 {/* Preview sections */}
                 <div className="bg-white rounded-lg shadow-sm">
-          <div className="p-6 border-b border-gray-200">
-            <h2 className="text-lg font-semibold text-gray-900">Website Design</h2>
-            <p className="mt-1 text-sm text-gray-500">
-              Edit and preview your website design
-            </p>
-          </div>
-          <div className="bg-white border rounded-lg m-6">
-            {availableSectionsRes.map(({ key, component }) => (
-              <React.Fragment key={key}>
-                {component}
-              </React.Fragment>
-            ))}
-          </div>
-        </div>
+                  <div className="p-6 border-b border-gray-200">
+                    <h2 className="text-lg font-semibold text-gray-900">
+                      Website Design
+                    </h2>
+                    <p className="mt-1 text-sm text-gray-500">
+                      Edit and preview your website design
+                    </p>
+                  </div>
+                  <div className="bg-white border rounded-lg m-6">
+                    {availableSectionsRes.map(({ key, component }) => (
+                      <React.Fragment key={key}>{component}</React.Fragment>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -314,16 +328,24 @@ const Index = () => {
     <Layout>
       <div className="min-h-screen bg-gray-50 py-8">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl font-bold text-center text-gray-900 mb-2">AI Landing Page</h1>
+          <h1 className="text-3xl font-bold text-center text-gray-900 mb-2">
+            AI Landing Page
+          </h1>
           <p className="text-center text-gray-600 mb-8">
-            Our AI-powered landing page builder helps you create unique landing pages for your business in seconds — no writing, designing or coding required.
+            Our AI-powered landing page builder helps you create unique landing
+            pages for your business in seconds — no writing, designing or coding
+            required.
           </p>
-          <p className="text-center text-gray-500 mb-8">This tool will deduct 1 credit per section.</p>
+          <p className="text-center text-gray-500 mb-8">
+            This tool will deduct 1 credit per section.
+          </p>
 
           <div className="bg-white rounded-lg shadow p-6">
             <div className="grid grid-cols-2 gap-6">
               <div className="col-span-1">
-                <label className="block text-sm font-medium text-gray-700">Language</label>
+                <label className="block text-sm font-medium text-gray-700">
+                  Language
+                </label>
                 <select
                   name="language"
                   value={formData.language}
@@ -335,7 +357,9 @@ const Index = () => {
               </div>
 
               <div className="col-span-1">
-                <label className="block text-sm font-medium text-gray-700">Tone of voice</label>
+                <label className="block text-sm font-medium text-gray-700">
+                  Tone of voice
+                </label>
                 <select
                   name="toneOfVoice"
                   value={formData.toneOfVoice}
@@ -347,7 +371,9 @@ const Index = () => {
               </div>
 
               <div className="col-span-1">
-                <label className="block text-sm font-medium text-gray-700">Company Name*</label>
+                <label className="block text-sm font-medium text-gray-700">
+                  Company Name*
+                </label>
                 <input
                   type="text"
                   name="companyName"
@@ -359,7 +385,9 @@ const Index = () => {
               </div>
 
               <div className="col-span-1">
-                <label className="block text-sm font-medium text-gray-700">Company Type*</label>
+                <label className="block text-sm font-medium text-gray-700">
+                  Company Type*
+                </label>
                 <select
                   name="companyType"
                   value={formData.companyType}
@@ -373,7 +401,9 @@ const Index = () => {
               </div>
 
               <div className="col-span-1">
-                <label className="block text-sm font-medium text-gray-700">Audience*</label>
+                <label className="block text-sm font-medium text-gray-700">
+                  Audience*
+                </label>
                 <input
                   type="text"
                   name="audience"
@@ -385,7 +415,9 @@ const Index = () => {
               </div>
 
               <div className="col-span-1">
-                <label className="block text-sm font-medium text-gray-700">Main Color*</label>
+                <label className="block text-sm font-medium text-gray-700">
+                  Main Color*
+                </label>
                 <div className="mt-1 flex items-center">
                   <div
                     className="w-8 h-8 rounded-md border border-gray-300"
@@ -405,7 +437,9 @@ const Index = () => {
               </div>
 
               <div className="col-span-2">
-                <label className="block text-sm font-medium text-gray-700">Company Description*</label>
+                <label className="block text-sm font-medium text-gray-700">
+                  Company Description*
+                </label>
                 <textarea
                   name="companyDescription"
                   placeholder="Explain here to the AI what your product (or service) is about. Rewrite to get different results."
@@ -416,7 +450,11 @@ const Index = () => {
                 />
                 <div className="mt-1 text-sm text-gray-500 flex justify-between">
                   <span>{characterCount}/200</span>
-                  {characterCount < 40 && <span className="text-orange-500">40 more characters needed in your description.</span>}
+                  {characterCount < 40 && (
+                    <span className="text-orange-500">
+                      40 more characters needed in your description.
+                    </span>
+                  )}
                 </div>
               </div>
 
@@ -447,14 +485,16 @@ const Index = () => {
                   >
                     <option value="">-- Select section --</option>
                     {availableSections.map((section) => {
-                      const isSelected = selectedSections.some(s => s.id === section.id);
+                      const isSelected = selectedSections.some(
+                        (s) => s.id === section.id
+                      );
                       return (
-                        <option 
-                          key={section.id} 
+                        <option
+                          key={section.id}
                           value={section.id}
                           disabled={isSelected}
                         >
-                          {section.label} {isSelected ? '(Selected)' : ''}
+                          {section.label} {isSelected ? "(Selected)" : ""}
                         </option>
                       );
                     })}
@@ -464,12 +504,15 @@ const Index = () => {
                 {/* Validation Messages */}
                 {selectedSections.length < 3 && (
                   <p className="mt-2 text-sm text-orange-500">
-                    Please select at least {3 - selectedSections.length} more section{selectedSections.length < 2 ? 's' : ''}.
+                    Please select at least {3 - selectedSections.length} more
+                    section{selectedSections.length < 2 ? "s" : ""}.
                   </p>
                 )}
                 {selectedSections.length > 8 && (
                   <p className="mt-2 text-sm text-red-500">
-                    Maximum 8 sections allowed. Please remove {selectedSections.length - 8} section{selectedSections.length - 8 > 1 ? 's' : ''}.
+                    Maximum 8 sections allowed. Please remove{" "}
+                    {selectedSections.length - 8} section
+                    {selectedSections.length - 8 > 1 ? "s" : ""}.
                   </p>
                 )}
               </div>
@@ -480,7 +523,7 @@ const Index = () => {
               disabled={selectedSections.length < 3 || isLoading}
               className="mt-6 w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 disabled:bg-gray-400"
             >
-              {isLoading ? 'Creating...' : 'Create new page'}
+              {isLoading ? "Creating..." : "Create new page"}
             </button>
           </div>
         </div>
@@ -489,4 +532,4 @@ const Index = () => {
   );
 };
 
-export default Index; 
+export default Index;

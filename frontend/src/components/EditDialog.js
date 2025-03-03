@@ -49,7 +49,6 @@ const EditDialog = ({ isOpen, onClose, fields, values, onChange }) => {
           ))}
         </div>
 
-        {/* Optional: Add a save button */}
         <div className="mt-6 flex justify-end">
           <button
             onClick={onClose}
