@@ -21,6 +21,9 @@ llm = ChatGroq(
     api_key=api_key
 )
 
+# Global variable to store the last generated content
+parsed_json = None
+
 # Tone options
 tone_options = [
     "Professional", "Childish", "Luxurious", "Friendly", "Formal", "Humorous",
@@ -29,6 +32,7 @@ tone_options = [
 
 def generate_content(selected_sections, company_name, company_type, company_description, audience, tone_of_voice):
     """Generate content for selected sections with strict JSON-only output."""
+    global parsed_json
     
     content_dict = {}
     
@@ -222,15 +226,26 @@ def generate_content(selected_sections, company_name, company_type, company_desc
 
 
     if not content_dict:
-        return "Invalid section selection."
+        return {"error": "Invalid section selection."}
 
     # Execute tasks with Crew
     results = Crew(tasks=list(content_dict.values()), verbose=False).kickoff()
 
     # Extract outputs and return as a dictionary
-    output_dict = {key: results.tasks_output[i] for i, key in enumerate(content_dict.keys())}
+    output_dict = {}
+    for i, key in enumerate(content_dict.keys()):
+        try:
+            if hasattr(results.tasks_output[i], 'raw'):
+                output_dict[key] = json.loads(results.tasks_output[i].raw)
+            else:
+                output_dict[key] = results.tasks_output[i]
+        except json.JSONDecodeError:
+            output_dict[key] = {"error": "Failed to parse JSON output"}
 
-    return output_dict  # Return outputs for all sections
+    # Store the generated content
+    parsed_json = output_dict
+    
+    return parsed_json
 
 
 
@@ -241,13 +256,8 @@ url = "http://127.0.0.1:5000/landing_page"
 
 # Function to update company details
 def set_company_details(name, c_type, description, audience, tone, sections):
-    global company_name, company_type, company_description, target_audience, tone_of_voice, selected_sections
-    company_name = name
-    company_type = c_type
-    company_description = description
-    target_audience = audience
-    tone_of_voice = tone
-    selected_sections = sections
+    """Set company details and generate content."""
+    return generate_content(sections, name, c_type, description, audience, tone)
 
 if __name__ == "__main__":
     # Initialize variables with default values
@@ -287,24 +297,11 @@ if __name__ == "__main__":
     print("\nGenerating Content...\n")
     output_texts = generate_content(selected_sections, company_name, company_type, company_description, target_audience, tone_of_voice)
     
-    # result=format_output(output_texts)
-    print(type(output_texts),output_texts)
-    print(type(output_texts), output_texts)  # Display the type and full content for debugging
-
-    print("\nGenerated Content:")
-    if isinstance(output_texts, dict):  # Ensure it's a dictionary
-        for key, task_output in output_texts.items():
-            if hasattr(task_output, "raw"):  # Check if 'raw' exists in the TaskOutput
-                try:
-                    parsed_json = json.loads(task_output.raw)  # Parse the raw string as JSON ## LANDING PAGE RESPONSE
-                except json.JSONDecodeError:
-                    parsed_json = {"error": "Invalid JSON format", "raw_output": task_output.raw}  # Fallback JSON structure
-                print(f"\nSection: {key}")
-                print(json.dumps(parsed_json, indent=4))  # Pretty print the JSON
-            else:
-                parsed_json = {"error": "No raw output available"}  # Fallback JSON
-                print(f"\nSection: {key}")
-                print(json.dumps(parsed_json, indent=4))
+    print("Generated Content:")
+    if isinstance(output_texts, dict):
+        for key, value in output_texts.items():
+            print(f"\nSection: {key}")
+            print(json.dumps(value, indent=4))
     else:
         print(json.dumps({"error": "Output format is not a dictionary"}, indent=4))
 
