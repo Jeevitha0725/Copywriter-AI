@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request
-import cw_landingpage  # Import response.py file
+import cw_landingpage, cw_aboutus  # Import response.py file
 import requests  # Import requests to send data to our own Flask server
 
 app = Flask(__name__)
@@ -35,7 +35,7 @@ def aboutus_tool():
     tone_of_voice = data.get('tone_of_voice', 'Professional')
 
     # Pass data to cw_landingpage
-    res = cw_landingpage.set_product_details(
+    res = cw_aboutus.set_product_details(
         product_name, product_description, target_audience, creativity, tone_of_voice
     )
 
