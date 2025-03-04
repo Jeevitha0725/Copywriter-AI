@@ -4,7 +4,7 @@ from langchain_groq import ChatGroq
 import json
 
 # Set the API key
-os.environ["GROQ_API_KEY"] = "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"
+os.environ["GROQ_API_KEY"] = "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"
 
 os.environ["OTEL_SDK_DISABLED"] = "true"
 
