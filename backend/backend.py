@@ -1,7 +1,6 @@
 from flask import Flask, jsonify, request
-import cw_landingpage, cw_aboutus  # Import response.py file
+import cw_landingpage, cw_aboutus, cw_faq_answer, cw_faqs, cw_features, cw_headline  # Import response.py file
 import requests  # Import requests to send data to our own Flask server
-from flask_cors import CORS
 
 
 app = Flask(__name__)
@@ -269,7 +268,7 @@ if __name__ == '__main__':
         "company_description": company_description,
         "product_name": product_name,
         "product_description": product_description,
-        "target_audience": target_audience,
+        "target_audience": audience,
         "creativity": creativity,
         "tone_of_voice": tone_of_voice
     })
@@ -287,7 +286,7 @@ if __name__ == '__main__':
     response = requests.post(url, json={
         "product_name": product_name,
         "product_description": product_description,
-        "target_audience": target_audience,
+        "target_audience": audience,
         "creativity": creativity,
         "tone_of_voice": tone_of_voice
     })

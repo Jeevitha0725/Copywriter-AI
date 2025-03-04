@@ -88,6 +88,7 @@ if __name__ == "__main__":
     target_audience = "Unknown"
     creativity = "Normal"
     tone_of_voice = "Professional"
+    url=""
 
     try:
         response = requests.get(url)
