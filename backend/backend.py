@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request
-import cw_landingpage, cw_aboutus  # Import response.py file
+import cw_landingpage, cw_aboutus, cw_faq_answer, cw_faqs, cw_features, cw_headline  # Import response.py file
 import requests  # Import requests to send data to our own Flask server
 
 app = Flask(__name__)
@@ -41,6 +41,82 @@ def aboutus_tool():
 
     return jsonify({"message": "Landing page details updated", "data": res})
 
+@app.route('/faq_answer', methods=['POST'])
+def faq_answer():
+    data = request.get_json()
+
+    # Extracting data from request
+    product_name = data.get('product_name', 'Unknown')
+    product_description = data.get('product_description', 'Unknown')
+    target_audience = data.get('target_audience', 'Unknown')
+    question = data.get('question', 'Unknown')
+    creativity = data.get('creativity', 'Normal')
+
+    # Pass data to cw_faq
+    res = cw_faq_answer.set_product_details(
+        product_name, product_description, target_audience, question, creativity
+    )
+
+    return jsonify({"message": "FAQ answer updated", "data": res})
+
+@app.route('/faqs', methods=['POST'])
+def faqs():
+    data = request.get_json()
+
+    # Extracting data from request
+    product_name = data.get('product_name', 'Unknown')
+    product_description = data.get('product_description', 'Unknown')
+    target_audience = data.get('target_audience', 'Unknown')
+    creativity = data.get('creativity', 'Normal')
+    tone_of_voice = data.get('tone_of_voice', 'Professional')
+
+    # Pass data to cw_faqs
+    res = cw_faqs.set_product_details(
+        product_name, product_description, target_audience, creativity, tone_of_voice
+    )
+
+    return jsonify({"message": "FAQs updated", "data": res})
+
+
+@app.route('/features', methods=['POST'])
+def features():
+    data = request.get_json()
+
+    # Extracting data from request
+    company_name = data.get('company_name', 'Unknown')
+    company_description = data.get('company_description', 'Unknown')
+    product_name = data.get('product_name', 'Unknown')
+    product_description = data.get('product_description', 'Unknown')
+    target_audience = data.get('target_audience', 'Unknown')
+    creativity = data.get('creativity', 'Normal')
+    tone_of_voice = data.get('tone_of_voice', 'Professional')
+
+    # Pass data to cw_features
+    res = cw_features.set_product_details(
+        company_name, company_description, product_name, product_description, target_audience, creativity, tone_of_voice
+    )
+
+    return jsonify({"message": "Features details updated", "data": res})
+
+
+@app.route('/headline', methods=['POST'])
+def headline():
+    data = request.get_json()
+
+    # Extracting data from request
+    product_name = data.get('product_name', 'Unknown')
+    product_description = data.get('product_description', 'Unknown')
+    target_audience = data.get('target_audience', 'Unknown')
+    creativity = data.get('creativity', 'Normal')
+    tone_of_voice = data.get('tone_of_voice', 'Professional')
+
+    # Pass data to cw_headline
+    res = cw_headline.set_product_details(
+        product_name, product_description, target_audience, creativity, tone_of_voice
+    )
+
+    return jsonify({"message": "Headline details updated", "data": res})
+
 
 if __name__ == '__main__':
     # Start Flask server in a separate thread
@@ -58,6 +134,7 @@ if __name__ == '__main__':
     product_name = input("Enter Product Name: ").strip()
     product_description = input("Enter Product Description: ").strip()
     audience = input("Enter Target Audience: ").strip()
+    question = input("Enter Question: ").strip()
 
     # Tone selection
     tone_options = ["Professional", "Casual", "Friendly", "Technical"]
@@ -144,4 +221,77 @@ if __name__ == '__main__':
     # Fetch and print the updated details using a GET request
     get_response = requests.get(url)
     print("Updated About Us Details:", get_response.json())
+    
+    
+    # API endpoint for sending data to the faq_answer route
+    url = "http://127.0.0.1:5000/faq_answer"
+    response = requests.post(url, json={
+        "product_name": product_name,
+        "product_description": product_description,
+        "target_audience": audience,
+        "question": question,
+        "creativity": creativity
+    })
 
+    # Print the response from Flask
+    print("Response from faq_answer:", response.json())
+
+    # Fetch and print the updated FAQ answer details using a GET request
+    get_response = requests.get(url)
+    print("Updated FAQ Answer Details:", get_response.json())
+    
+    
+    # API endpoint for sending data to the faqs route
+    url = "http://127.0.0.1:5000/faqs"
+    response = requests.post(url, json={
+        "product_name": product_name,
+        "product_description": product_description,
+        "target_audience": audience,
+        "creativity": creativity,
+        "tone_of_voice": tone_of_voice
+    })
+
+    # Print the response from Flask
+    print("Response from faqs:", response.json())
+
+    # Fetch and print the updated FAQs details using a GET request
+    get_response = requests.get(url)
+    print("Updated FAQs Details:", get_response.json())
+    
+    
+    # API endpoint for sending data to the features route
+    url = "http://127.0.0.1:5000/features"
+    response = requests.post(url, json={
+        "company_name": company_name,
+        "company_description": company_description,
+        "product_name": product_name,
+        "product_description": product_description,
+        "target_audience": target_audience,
+        "creativity": creativity,
+        "tone_of_voice": tone_of_voice
+    })
+
+    # Print the response from Flask
+    print("Response from features:", response.json())
+
+    # Fetch and print the updated details using a GET request
+    get_response = requests.get(url)
+    print("Updated Features Details:", get_response.json())
+    
+    
+    # API endpoint for sending data to the headline route
+    url = "http://127.0.0.1:5000/headline"
+    response = requests.post(url, json={
+        "product_name": product_name,
+        "product_description": product_description,
+        "target_audience": target_audience,
+        "creativity": creativity,
+        "tone_of_voice": tone_of_voice
+    })
+
+    # Print the response from Flask
+    print("Response from headline:", response.json())
+
+    # Fetch and print the updated details using a GET request
+    get_response = requests.get(url)
+    print("Updated Headline Details:", get_response.json())
