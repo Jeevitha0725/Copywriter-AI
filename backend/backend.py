@@ -30,20 +30,6 @@ def landing_page():
                 company_name, company_type, company_description,
                 audience, tone_of_voice, selected_sections
             )
-
-            # Check for errors in individual sections
-            has_errors = any(
-                isinstance(section, dict) and "error" in section 
-                for section in res.values()
-            )
-
-            if has_errors:
-                # Return partial results if some sections failed
-                return jsonify({
-                    "message": "Some sections failed to generate",
-                    "data": res,
-                    "status": "partial"
-                }), 206
             
             return jsonify({
                 "message": "Landing page details updated",
@@ -69,7 +55,7 @@ def landing_page():
 
     except Exception as e:
         print(f"Server error: {str(e)}")
-        print(traceback.format_exc())
+        print(traceback.format_exc())        
         return jsonify({
             "error": "Server error",
             "message": str(e)
