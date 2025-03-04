@@ -2,6 +2,8 @@ import os
 from crewai import Agent, Task, Crew
 from langchain_groq import ChatGroq
 import json
+import requests
+
 
 # Set the API key
 os.environ["GROQ_API_KEY"] = "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"
@@ -63,17 +65,42 @@ def generate_faq_answer(product_name, product_description, target_audience, ques
     result = crew.kickoff(inputs={})
     return result  # Directly return the dictionary
 
-if __name__ == "__main__":
-    """Direct execution for input and FAQ answer generation."""
-    product_name = input("Enter Product/Company Name: ").strip()
-    product_description = input("Enter Product/Company Description: ").strip()
-    target_audience = input("Enter Target Audience: ").strip()
-    question = input("Enter the question you want an answer for: ").strip()
 
-    creativity = input("Enter Creativity Level (Normal, High): ").strip().capitalize()
-    while creativity not in ["Normal", "High"]:
-        print("Invalid choice! Please enter either 'Normal' or 'High'.")
-        creativity = input("Enter Creativity Level (Normal, High): ").strip().capitalize()
+# Function to update product details
+def set_product_details(product_name, product_description, target_audience, question, creativity):
+    """Set product details and generate content."""
+    return generate_faq_answer(product_name, product_description, target_audience, question, creativity)
+
+if __name__ == "__main__":
+    # Initialize variables with default values
+    product_name = "Unknown"
+    product_description = "Unknown"
+    target_audience = "Unknown"
+    question = "Unknown"
+    creativity = "Normal"
+
+    try:
+        response = requests.get(url)
+        if response.status_code == 200:
+            data = response.json()
+            product_name = data.get("product_name", "Unknown")
+            product_description = data.get("product_description", "Unknown")
+            target_audience = data.get("target_audience", "Unknown")
+            question = data.get("question", "Unknown")
+            creativity = data.get("creativity", "Normal")
+        else:
+            print("Warning: Unable to fetch data from Flask API. Using default values.")
+    except requests.exceptions.RequestException as e:
+        print(f"Error: {e}. Using default values.")
+
+    set_product_details(product_name, product_description, target_audience, question, creativity)
+
+    print("\nLanding Page Configuration:")
+    print(f"Product Name: {product_name}")
+    print(f"Product Description: {product_description}")
+    print(f"Target Audience: {target_audience}")
+    print(f"Question: {question}")
+    print(f"Creativity Level: {creativity}")
 
     if not product_name or not product_description or not target_audience or not question:
         print("Error: Please provide all required inputs.")

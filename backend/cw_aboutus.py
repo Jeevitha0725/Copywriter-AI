@@ -2,6 +2,7 @@ import os
 from crewai import Agent, Task, Crew
 from langchain_groq import ChatGroq
 import json
+import requests
 
 # Set the API key
 os.environ["GROQ_API_KEY"] = "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"
@@ -71,11 +72,6 @@ def generate_about_us(product_name, product_description, target_audience, creati
     return result  # Directly return the dictionary
 
 
-import requests
-
-# API endpoint for fetching landing page data
-url = "http://127.0.0.1:5000/landing_page"
-
 # Function to update product details
 def set_product_details(product_name, product_description, target_audience, creativity, tone):
     """Set product details and generate content."""
@@ -88,6 +84,7 @@ if __name__ == "__main__":
     target_audience = "Unknown"
     creativity = "Normal"
     tone_of_voice = "Professional"
+    url=""
 
     try:
         response = requests.get(url)

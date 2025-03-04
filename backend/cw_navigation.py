@@ -1,7 +1,7 @@
 import os
 from crewai import Agent, Task, Crew
 from langchain_groq import ChatGroq
-import json
+import json, requests
 
 # Set the API key
 os.environ["GROQ_API_KEY"] = "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"
@@ -71,36 +71,46 @@ def generate_navigation(company_name, company_type, product_name, product_descri
     result = crew.kickoff(inputs={})
     return result  # Directly return the dictionary
 
-if __name__ == "__main__":
-    """Direct execution for input and navigation menu generation."""
-    company_name = input("Enter Company Name: ").strip()
-    company_type = input("Enter Company Type: ").strip()
-    product_name = input("Enter Product Name: ").strip()
-    product_description = input("Enter Product Description: ").strip()
-    
-    creativity = input("Enter Creativity Level (Normal, High): ").strip().capitalize()
-    while creativity not in ["Normal", "High"]:
-        print("Invalid choice! Please enter either 'Normal' or 'High'.")
-        creativity = input("Enter Creativity Level (Normal, High): ").strip().capitalize()
+# Function to update company and product details
+def set_details(company_name, company_type, product_name, product_description, creativity, tone_of_voice):
+    """Set details and generate content."""
+    return generate_navigation(company_name, company_type, product_name, product_description, creativity, tone_of_voice)
 
-    tone_options = [
-        "Professional", "Childish", "Luxurious", "Friendly", "Formal", "Humorous",
-        "Confident", "Exciting", "Surprised", "Academic", "Optimistic", "Creative"
-    ]
-    
-    print("\nSelect Tone of Voice:")
-    for i, tone in enumerate(tone_options, 1):
-        print(f"{i}. {tone}")
+if __name__ == "__main__":
+    # Initialize variables with default values
+    company_name = "Unknown"
+    company_type = "Unknown"
+    product_name = "Unknown"
+    product_description = "Unknown"
+    creativity = "Normal"
+    tone_of_voice = "Professional"
+    url = ""
 
     try:
-        tone_choice = int(input("\nEnter the number corresponding to the tone of voice: "))
-        if 1 <= tone_choice <= len(tone_options):
-            tone_of_voice = tone_options[tone_choice - 1]
+        response = requests.get(url)
+        if response.status_code == 200:
+            data = response.json()
+            company_name = data.get("company_name", "Unknown")
+            company_type = data.get("company_type", "Unknown")
+            product_name = data.get("product_name", "Unknown")
+            product_description = data.get("product_description", "Unknown")
+            creativity = data.get("creativity", "Normal")
+            tone_of_voice = data.get("tone_of_voice", "Professional")
         else:
-            raise ValueError
-    except ValueError:
-        print("Invalid choice! Defaulting to 'Professional'.")
-        tone_of_voice = "Professional"
+            print("Warning: Unable to fetch data from Flask API. Using default values.")
+    except requests.exceptions.RequestException as e:
+        print(f"Error: {e}. Using default values.")
+
+    set_details(company_name, company_type, product_name, product_description, creativity, tone_of_voice)
+
+    print("\nConfiguration Details:")
+    print(f"Company Name: {company_name}")
+    print(f"Company Type: {company_type}")
+    print(f"Product Name: {product_name}")
+    print(f"Product Description: {product_description}")
+    print(f"Creativity Level: {creativity}")
+    print(f"Tone of Voice: {tone_of_voice}")
+
 
     if not company_name or not company_type or not product_name or not product_description:
         print("Error: Please provide all required inputs.")
