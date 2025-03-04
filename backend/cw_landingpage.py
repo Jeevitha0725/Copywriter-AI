@@ -4,7 +4,7 @@ from langchain_groq import ChatGroq
 import json
 
 # Set the API key
-os.environ["GROQ_API_KEY"] = "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"
+os.environ["GROQ_API_KEY"] = "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"
 
 os.environ["OTEL_SDK_DISABLED"] = "true"
 
@@ -16,8 +16,8 @@ if not api_key:
 
 # Initialize the model
 llm = ChatGroq(
-    temperature=0.7,
-    model="groq/llama3-70b-8192",
+    temperature=1,
+    model="groq/gemma2-9b-it",
     api_key=api_key
 )
 

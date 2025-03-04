@@ -67,67 +67,6 @@ const Index = () => {
 
   const [data, setData] = useState(null);
 
-  useEffect(() => {
-    // Replace with your API call
-    const fetchData = async () => {
-      const response = {
-        headerSection: {
-          logo: "Syncner",
-          links: ["Home", "AboutUs"],
-        },
-        heroSection: {
-          title: "Elevate Your Business with Syncner's Innovative Solutions",
-          description:
-            "Take your business to the next level with Syncner. Our customized solutions and streamlined processes will help you reach new heights of success in your industry.",
-        },
-        howItWorksSection: {
-          title: "Elevate Your Business with Customized Solutions from Syncner",
-          description:
-            "Take your business to new heights with Syncner. Our customized solutions and streamlined processes will help drive your success in a constantly evolving industry.",
-          services: [
-            {
-              title: "Consultation",
-              description:
-                "Our team of experts will meet with you to understand your business needs and goals. We will discuss your design requirements, budget, and timeline.",
-            },
-            {
-              title: "Customized Solution",
-              description:
-                "Based on our consultation, we will design a tailored solution for your business that aligns with your specific needs. This may include creating a new brand identity, developing marketing materials, or revamping your website.",
-            },
-          ],
-        },
-        testimonials: {
-          title: "Testimonials",
-          description:
-            "Don't just take our word for it, read from our extensive list of case studies and customer testimonials.",
-          testimonialLists: [
-            {
-              comment:
-                "I have been using Syncner for my business needs and I am blown away by the efficiency and innovation they bring to the table. Their tailored solutions have truly helped streamline our processes and improve our overall operations. The team at Syncner is dedicated, knowledgeable, and always goes above and beyond to ensure their clients' success. Thank you Syncner for taking our business to the next level!",
-              user: "Jane Cooper",
-              company: "CEO SomeCompany",
-            },
-            {
-              comment:
-                "I have been using Syncner for my business needs and I am blown away by the efficiency and innovation they bring to the table. Their tailored solutions have truly helped streamline our processes and improve our overall operations. The team at Syncner is dedicated, knowledgeable, and always goes above and beyond to ensure their clients' success. Thank you Syncner for taking our business to the next level!",
-              user: "Jane Cooper",
-              company: "CEO SomeCompany",
-            },
-          ],
-        },
-        aboutUsSection: {
-          title:
-            "Unlock Your Business's Full Potential with Syncner: Tailored Solutions for Maximum Success",
-          description:
-            "Syncner was founded by a team of designers with a passion for helping businesses reach their full potential. With years of experience in the design industry, we understand the challenges and complexities that come with running a successful business.",
-        },
-      };
-      setData(response);
-    };
-    fetchData();
-  }, []);
-
   const handleSectionUpdate = (sectionKey, updatedData) => {
     setData((prev) => ({
       ...prev,
@@ -137,11 +76,6 @@ const Index = () => {
       },
     }));
   };
-
-  // Ensure data is loaded before rendering
-  if (!data) {
-    return <div>Loading...</div>;
-  }
 
   const availableSections = [
     { id: "navigation", label: "Navigation/Menu" },
@@ -156,71 +90,72 @@ const Index = () => {
   const sectionComponents = [
     {
       key: "navigation",
-      component: data.navigation && (
+      component: (
         <HeaderSection
           logo={formData.companyName}
-          links={data.navigation.navigation}
+          links={data?.navigation?.navigation || []}
         />
       ),
     },
     {
       key: "hero",
-      component: data.hero && (
+      component: data?.hero?.hero_section ? (
         <HeroSection
           title={data.hero.hero_section.title}
           description={data.hero.hero_section.description}
           onUpdate={(updates) => handleSectionUpdate("hero", updates)}
         />
-      ),
+      ) : null,
     },
     {
       key: "howitworks",
-      component: data.howitworks && (
+      component: data?.howitworks?.howItWorksSection ? (
         <HowItWorksSection
           title={data.howitworks.howItWorksSection.title}
           description={data.howitworks.howItWorksSection.description}
-          services={data.howitworks.howItWorksSection.services}
+          services={data.howitworks.howItWorksSection.services || []}
         />
-      ),
+      ) : null,
     },
     {
       key: "features",
-      component: data.features && (
-        <FeaturesSection features={data.features.features} />
-      ),
+      component: data?.features ? (
+        <FeaturesSection 
+          features={data.features.features || []} 
+        />
+      ) : null,
     },
     {
       key: "testimonials",
-      component: data.testimonials && (
+      component: data?.testimonials?.testimonials ? (
         <TestimonialsSection
-          title={data.testimonials.title}
-          description={data.testimonials.description}
-          testimonialLists={data.testimonials.testimonialLists}
+          testimonials={data.testimonials.testimonials}
+          onUpdate={(updates) => handleSectionUpdate('testimonials', updates)}
         />
-      ),
+      ) : null,
     },
     {
       key: "about_us",
-      component: data.about_us && (
+      component: data?.about_us?.aboutUsSection ? (
         <AboutUsSection
           title={data.about_us.aboutUsSection.title}
           description={data.about_us.aboutUsSection.description}
         />
-      ),
+      ) : null,
     },
     {
       key: "footer",
-      component: data.footer && (
+      component: data?.footer?.footer ? (
         <Footer
           companyName={data.footer.footer["Company name"]}
-          links={data.footer.footer.Links}
+          links={data.footer.footer.Links || []}
         />
-      ),
+      ) : null,
     },
   ];
 
   const availableSectionsRes = sectionComponents.filter(
-    (section) => data[section.key] && section.component
+    (section) => section.component !== null
   );
 
   const handleInputChange = (e) => {
@@ -278,7 +213,7 @@ const Index = () => {
         selected_sections: selectedSections.map((section) => section.id),
       };
 
-      const response = await axios.post('http://127.0.0.1:5000/landing_page', requestBody);
+      const response = await axios.post('/api/landing_page', requestBody);
 
       // let d = {
       //   data: {
