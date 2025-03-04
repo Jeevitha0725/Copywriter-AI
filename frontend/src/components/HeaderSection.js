@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import EditDialog from './EditDialog';
 
-const HeaderSection = ({ logo, links, onUpdate }) => {
+const HeaderSection = ({ logo = '', links = [] }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editingField, setEditingField] = useState(null);
   const [content, setContent] = useState({ logo, links });
@@ -13,7 +13,6 @@ const HeaderSection = ({ logo, links, onUpdate }) => {
       [key]: value
     };
     setContent(newContent);
-    onUpdate?.(newContent);
   };
 
   const handleEditClick = (field) => {
@@ -46,13 +45,13 @@ const HeaderSection = ({ logo, links, onUpdate }) => {
               onClick={() => handleEditClick('logo')}
             >
               <span className={editButtonClasses}>Edit</span>
-              {content.logo}
+              {content.logo || 'Your Logo'}
             </div>
           </div>
 
           {/* Navigation Links */}
           <div className="hidden sm:flex sm:space-x-8 sm:items-center">
-            {content.links.map((link, index) => (
+            {Array.isArray(content.links) && content.links.map((link, index) => (
               <div key={index} className="relative">
                 <button
                   className={`inline-flex items-center px-1 pt-1 text-sm font-medium ${
@@ -123,11 +122,11 @@ const HeaderSection = ({ logo, links, onUpdate }) => {
         }}
         fields={getFieldsForType(editingField?.type || editingField)}
         values={editingField?.type === 'link' 
-          ? { text: content.links[editingField.index].label }
+          ? { text: content.links[editingField.index]?.label }
           : content}
         onChange={(key, value) => {
           if (editingField?.type === 'link') {
-            const newLinks = [...content.links];
+            const newLinks = [...(content.links || [])];
             newLinks[editingField.index].label = value;
             handleEdit('links', newLinks);
           } else {

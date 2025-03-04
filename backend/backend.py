@@ -1,6 +1,9 @@
 from flask import Flask, jsonify, request
 import cw_landingpage, cw_aboutus, cw_faq_answer, cw_faqs, cw_features, cw_headline, cw_hero, cw_howitworks, cw_navigation, cw_subheaders, cw_testimonials  # Import response.py file
 import requests  # Import requests to send data to our own Flask server
+import time
+from litellm.exceptions import RateLimitError
+import traceback
 from flask_cors import CORS
 
 
@@ -9,22 +12,68 @@ CORS(app)  # Enable CORS for all routes
 
 @app.route('/landing_page', methods=['POST'])
 def landing_page():
-    data = request.get_json()
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "No data provided"}), 400
 
-    # Extracting data from request
-    company_name = data.get('company_name', 'Unknown')
-    company_type = data.get('company_type', 'Unknown')
-    company_description = data.get('company_description', 'Unknown')
-    audience = data.get('target_audience', 'Unknown')
-    tone_of_voice = data.get('tone_of_voice', 'Professional')
-    selected_sections = data.get('selected_sections', [])
+        # Extracting data from request
+        company_name = data.get('company_name', 'Unknown')
+        company_type = data.get('company_type', 'Unknown')
+        company_description = data.get('company_description', 'Unknown')
+        audience = data.get('target_audience', 'Unknown')
+        tone_of_voice = data.get('tone_of_voice', 'Professional')
+        selected_sections = data.get('selected_sections', [])
 
-    # Pass data to cw_landingpage
-    res = cw_landingpage.set_company_details(
-        company_name, company_type, company_description, audience, tone_of_voice, selected_sections
-    )
+        try:
+            res = cw_landingpage.set_company_details(
+                company_name, company_type, company_description,
+                audience, tone_of_voice, selected_sections
+            )
 
-    return jsonify({"message": "Landing page details updated", "data": res})
+            # Check for errors in individual sections
+            has_errors = any(
+                isinstance(section, dict) and "error" in section 
+                for section in res.values()
+            )
+
+            if has_errors:
+                # Return partial results if some sections failed
+                return jsonify({
+                    "message": "Some sections failed to generate",
+                    "data": res,
+                    "status": "partial"
+                }), 206
+            
+            return jsonify({
+                "message": "Landing page details updated",
+                "data": res,
+                "status": "success"
+            })
+
+        except RateLimitError as e:
+            print(f"Rate limit error: {str(e)}")
+            return jsonify({
+                "error": "Rate limit exceeded",
+                "message": str(e),
+                "retry_after": 2
+            }), 429
+
+        except Exception as e:
+            print(f"Error generating content: {str(e)}")
+            print(traceback.format_exc())
+            return jsonify({
+                "error": "Error generating content",
+                "message": str(e)
+            }), 500
+
+    except Exception as e:
+        print(f"Server error: {str(e)}")
+        print(traceback.format_exc())
+        return jsonify({
+            "error": "Server error",
+            "message": str(e)
+        }), 500
 
 @app.route('/aboutus_tool', methods=['POST'])
 def aboutus_tool():

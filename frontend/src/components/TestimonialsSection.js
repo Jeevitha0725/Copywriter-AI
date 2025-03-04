@@ -2,9 +2,13 @@ import React, { useState } from 'react';
 import EditDialog from './EditDialog';
 import GenerateButton from './GenerateButton';
 
-const TestimonialsSection = ({ title, description, testimonialLists, onUpdate }) => {
+const TestimonialsSection = ({ testimonials, onUpdate }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [content, setContent] = useState({ title, description, testimonialLists });
+  const [content, setContent] = useState(testimonials || {
+    title: '',
+    description: '',
+    testimonialLists: []
+  });
 
   const handleEdit = (key, value) => {
     const newContent = {
@@ -90,7 +94,7 @@ const TestimonialsSection = ({ title, description, testimonialLists, onUpdate })
         </div>
 
         <div className="mt-12 grid gap-8 lg:grid-cols-3">
-          {content.testimonialLists.map((testimonial, index) => (
+          {(content.testimonialLists || []).map((testimonial, index) => (
             <div
               key={index}
               className="bg-gray-50 rounded-lg p-8"
