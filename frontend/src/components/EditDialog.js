@@ -7,8 +7,12 @@ const EditDialog = ({ isOpen, onClose, sectionType, onGenerate }) => {
     prompt: '',
     tone: 'professional',
     targetAudience: '',
-    keywords: '',
-    length: 'medium'
+    companyName: '',
+    companyDescription: '',
+    companyType: '',
+    productName: '',
+    productDescription: '',
+    creativity: 'Normal'
   });
 
   if (!isOpen) return null;
@@ -54,71 +58,73 @@ const EditDialog = ({ isOpen, onClose, sectionType, onGenerate }) => {
       }
     };
 
+    // Map form data to API endpoint requirements
     switch (sectionType) {
       case 'hero':
         return {
           ...baseConfig,
-          url: '/api/generate-hero',
+          url: '/hero',
           data: {
-            prompt: formData.prompt,
-            tone: formData.tone,
-            targetAudience: formData.targetAudience,
-            keywords: formData.keywords.split(',').map(k => k.trim()),
-            length: formData.length
+            company_name: formData.companyName,
+            company_description: formData.companyDescription,
+            company_type: formData.companyType,
+            target_audience: formData.targetAudience || "Designer",
+            creativity: formData.creativity || 'Normal',
+            tone_of_voice: formData.tone
           }
         };
 
       case 'about':
         return {
           ...baseConfig,
-          url: '/api/generate-about',
+          url: '/aboutus_tool',
           data: {
-            prompt: formData.prompt,
-            tone: formData.tone,
-            companyType: formData.targetAudience,
-            keywords: formData.keywords.split(',').map(k => k.trim()),
-            length: formData.length
+            product_name: formData.productName,
+            product_description: formData.productDescription,
+            target_audience: formData.targetAudience || "Designer",
+            creativity: formData.creativity || 'Normal',
+            tone_of_voice: formData.tone
           }
         };
 
       case 'features':
         return {
           ...baseConfig,
-          url: '/api/generate-features',
+          url: '/features',
           data: {
-            prompt: formData.prompt,
-            tone: formData.tone,
-            productType: formData.targetAudience,
-            keywords: formData.keywords.split(',').map(k => k.trim()),
-            length: formData.length
+            company_name: formData.companyName,
+            company_description: formData.companyDescription,
+            product_name: formData.productName,
+            product_description: formData.productDescription,
+            target_audience: formData.targetAudience || "Designer",
+            creativity: formData.creativity || 'Normal',
+            tone_of_voice: formData.tone
           }
         };
 
       case 'testimonials':
         return {
           ...baseConfig,
-          url: '/api/generate-testimonials',
+          url: '/testimonial',
           data: {
-            prompt: formData.prompt,
-            tone: formData.tone,
-            customerType: formData.targetAudience,
-            keywords: formData.keywords.split(',').map(k => k.trim()),
-            length: formData.length,
-            numberOfTestimonials: formData.length === 'short' ? 2 : formData.length === 'medium' ? 3 : 4
+            product_name: formData.productName,
+            product_description: formData.productDescription,
+            target_audience: formData.targetAudience || "Designer",
+            creativity: formData.creativity || 'Normal',
+            tone_of_voice: formData.tone
           }
         };
 
       case 'howItWorks':
         return {
           ...baseConfig,
-          url: '/api/generate-how-it-works',
+          url: '/howitworks',
           data: {
-            prompt: formData.prompt,
-            tone: formData.tone,
-            serviceType: formData.targetAudience,
-            keywords: formData.keywords.split(',').map(k => k.trim()),
-            length: formData.length,
-            numberOfSteps: formData.length === 'short' ? 3 : formData.length === 'medium' ? 4 : 5
+            product_name: formData.productName,
+            product_description: formData.productDescription,
+            target_audience: formData.targetAudience || "Designer",
+            creativity: formData.creativity || 'Normal',
+            tone_of_voice: formData.tone
           }
         };
 
@@ -211,49 +217,52 @@ const EditDialog = ({ isOpen, onClose, sectionType, onGenerate }) => {
     switch (sectionType) {
       case 'hero':
         return {
-          prompt: true,
-          tone: true,
+          companyName: true,
+          companyDescription: true,
+          companyType: true,
           targetAudience: true,
-          keywords: true,
-          length: true
+          tone: true,
+          creativity: true
         };
       case 'about':
         return {
-          prompt: true,
+          productName: true,
+          productDescription: true,
+          targetAudience: true,
           tone: true,
-          keywords: true,
-          length: true
+          creativity: true
         };
       case 'features':
         return {
-          prompt: true,
+          companyName: true,
+          companyDescription: true,
+          productName: true,
+          productDescription: true,
+          targetAudience: true,
           tone: true,
-          productType: true,
-          keywords: true,
-          length: true
+          creativity: true
         };
       case 'testimonials':
         return {
-          prompt: true,
+          productName: true,
+          productDescription: true,
+          targetAudience: true,
           tone: true,
-          customerType: true,
-          keywords: true,
-          length: true
+          creativity: true
         };
       case 'howItWorks':
         return {
-          prompt: true,
+          productName: true,
+          productDescription: true,
+          targetAudience: true,
           tone: true,
-          serviceType: true,
-          keywords: true,
-          length: true
+          creativity: true
         };
       default:
         return {
           prompt: true,
           tone: true,
-          keywords: true,
-          length: true
+          creativity: true
         };
     }
   };
@@ -264,21 +273,91 @@ const EditDialog = ({ isOpen, onClose, sectionType, onGenerate }) => {
     
     return (
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Prompt field is always shown */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            What would you like to generate?
-          </label>
-          <textarea
-            name="prompt"
-            value={formData.prompt}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md"
-            rows={3}
-            placeholder="Describe what kind of content you want to generate..."
-            required
-          />
-        </div>
+        {/* Company Name field */}
+        {fields.companyName && (
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Company Name
+            </label>
+            <input
+              type="text"
+              name="companyName"
+              value={formData.companyName}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-700"
+              required
+            />
+          </div>
+        )}
+
+        {/* Company Description field */}
+        {fields.companyDescription && (
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Company Description
+            </label>
+            <textarea
+              name="companyDescription"
+              value={formData.companyDescription}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-700"
+              rows={3}
+              required
+            />
+          </div>
+        )}
+
+        {/* Company Type field */}
+        {fields.companyType && (
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Company Type
+            </label>
+            <input
+              type="text"
+              name="companyType"
+              value={formData.companyType}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-700"
+              placeholder="e.g., SaaS, eCommerce"
+              required
+            />
+          </div>
+        )}
+
+        {/* Product Name field */}
+        {fields.productName && (
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Product Name
+            </label>
+            <input
+              type="text"
+              name="productName"
+              value={formData.productName}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-700"
+              required
+            />
+          </div>
+        )}
+
+        {/* Product Description field */}
+        {fields.productDescription && (
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Product Description
+            </label>
+            <textarea
+              name="productDescription"
+              value={formData.productDescription}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-700"
+              rows={3}
+              required
+            />
+          </div>
+        )}
 
         {/* Tone field is always shown */}
         <div>
@@ -289,7 +368,7 @@ const EditDialog = ({ isOpen, onClose, sectionType, onGenerate }) => {
             name="tone"
             value={formData.tone}
             onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-700"
           >
             <option value="professional">Professional</option>
             <option value="casual">Casual</option>
@@ -298,105 +377,24 @@ const EditDialog = ({ isOpen, onClose, sectionType, onGenerate }) => {
           </select>
         </div>
 
-        {/* Target Audience field - shown for hero section */}
-        {fields.targetAudience && (
+        {/* Creativity field */}
+        {fields.creativity && (
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Target Audience
+              Creativity Level
             </label>
-            <input
-              type="text"
-              name="targetAudience"
-              value={formData.targetAudience}
+            <select
+              name="creativity"
+              value={formData.creativity}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
-              placeholder="e.g., Small business owners, Tech professionals"
-            />
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-700"
+            >
+              <option value="Low">Low</option>
+              <option value="Normal">Normal</option>
+              <option value="High">High</option>
+            </select>
           </div>
         )}
-
-        {/* Product Type field - shown for features section */}
-        {fields.productType && (
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Product Type
-            </label>
-            <input
-              type="text"
-              name="targetAudience"
-              value={formData.targetAudience}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
-              placeholder="e.g., SaaS, Mobile App, Hardware"
-            />
-          </div>
-        )}
-
-        {/* Customer Type field - shown for testimonials section */}
-        {fields.customerType && (
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Customer Type
-            </label>
-            <input
-              type="text"
-              name="targetAudience"
-              value={formData.targetAudience}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
-              placeholder="e.g., B2B, B2C, Enterprise"
-            />
-          </div>
-        )}
-
-        {/* Service Type field - shown for how it works section */}
-        {fields.serviceType && (
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Service Type
-            </label>
-            <input
-              type="text"
-              name="targetAudience"
-              value={formData.targetAudience}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
-              placeholder="e.g., Consulting, Subscription, One-time"
-            />
-          </div>
-        )}
-
-        {/* Keywords field - shown for all sections */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Keywords (comma-separated)
-          </label>
-          <input
-            type="text"
-            name="keywords"
-            value={formData.keywords}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md"
-            placeholder="e.g., innovation, technology, solutions"
-          />
-        </div>
-
-        {/* Length field - shown for all sections */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Content Length
-          </label>
-          <select
-            name="length"
-            value={formData.length}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md"
-          >
-            <option value="short">Short</option>
-            <option value="medium">Medium</option>
-            <option value="long">Long</option>
-          </select>
-        </div>
 
         <div className="flex justify-end mt-6">
           <button

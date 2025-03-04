@@ -17,7 +17,7 @@ if not api_key:
 # Initialize the model
 llm = ChatGroq(
     temperature=1,
-    model="groq/gemma2-9b-it",
+    model="groq/llama3-70b-8192",
     api_key=api_key
 )
 
