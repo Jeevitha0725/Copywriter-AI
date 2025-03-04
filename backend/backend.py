@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request
-import cw_landingpage, cw_aboutus, cw_faq_answer, cw_faqs, cw_features, cw_headline  # Import response.py file
+import cw_landingpage, cw_aboutus, cw_faq_answer, cw_faqs, cw_features, cw_headline, cw_hero, cw_howitworks, cw_navigation, cw_subheaders, cw_testimonials  # Import response.py file
 import requests  # Import requests to send data to our own Flask server
 from flask_cors import CORS
 
@@ -81,6 +81,7 @@ def faqs():
     return jsonify({"message": "FAQs updated", "data": res})
 
 
+
 @app.route('/features', methods=['POST'])
 def features():
     data = request.get_json()
@@ -119,6 +120,101 @@ def headline():
     )
 
     return jsonify({"message": "Headline details updated", "data": res})
+
+@app.route('/hero', methods=['POST'])
+def hero():
+    data = request.get_json()
+
+    # Extracting data from request
+    company_name = data.get('company_name', 'Unknown')
+    company_description = data.get('company_description', 'Unknown')
+    company_type = data.get('company_type', 'Unknown')
+    target_audience = data.get('target_audience', 'Unknown')
+    creativity = data.get('creativity', 'Normal')
+    tone_of_voice = data.get('tone_of_voice', 'Professional')
+
+    # Pass data to cw_hero
+    res = cw_hero.set_company_details(
+        company_name, company_description, company_type, target_audience, creativity, tone_of_voice
+    )
+
+    return jsonify({"message": "Hero section updated", "data": res})
+
+@app.route('/howitworks', methods=['POST'])
+def howitworks():
+    data = request.get_json()
+
+    # Extracting data from request
+    product_name = data.get('product_name', 'Unknown')
+    product_description = data.get('product_description', 'Unknown')
+    target_audience = data.get('target_audience', 'Unknown')
+    creativity = data.get('creativity', 'Normal')
+    tone_of_voice = data.get('tone_of_voice', 'Professional')
+
+    # Pass data to cw_howitworks
+    res = cw_howitworks.set_product_details(
+        product_name, product_description, target_audience, creativity, tone_of_voice
+    )
+
+    return jsonify({"message": "How It Works section updated", "data": res})
+
+
+@app.route('/navigation', methods=['POST'])
+def navigation():
+    data = request.get_json()
+
+    # Extracting data from request
+    company_name = data.get('company_name', 'Unknown')
+    company_type = data.get('company_type', 'Unknown')
+    product_name = data.get('product_name', 'Unknown')
+    product_description = data.get('product_description', 'Unknown')
+    creativity = data.get('creativity', 'Normal')
+    tone_of_voice = data.get('tone_of_voice', 'Professional')
+
+    # Pass data to cw_navigation
+    res = cw_navigation.set_company_details(
+        company_name, company_type, product_name, product_description, creativity, tone_of_voice
+    )
+
+    return jsonify({"message": "Navigation section updated", "data": res})
+
+
+@app.route('/subheader', methods=['POST'])
+def subheader():
+    data = request.get_json()
+
+    # Extracting data from request
+    product_name = data.get('product_name', 'Unknown')
+    product_description = data.get('product_description', 'Unknown')
+    target_audience = data.get('target_audience', 'Unknown')
+    creativity = data.get('creativity', 'Normal')
+    tone_of_voice = data.get('tone_of_voice', 'Professional')
+
+    # Pass data to cw_subheader
+    res = cw_subheaders.set_product_details(
+        product_name, product_description, target_audience, creativity, tone_of_voice
+    )
+
+    return jsonify({"message": "Subheader section updated", "data": res})
+
+
+@app.route('/testimonial', methods=['POST'])
+def testimonial():
+    data = request.get_json()
+
+    # Extracting data from request
+    product_name = data.get('product_name', 'Unknown')
+    product_description = data.get('product_description', 'Unknown')
+    target_audience = data.get('target_audience', 'Unknown')
+    creativity = data.get('creativity', 'Normal')
+    tone_of_voice = data.get('tone_of_voice', 'Professional')
+
+    # Pass data to cw_testimonial
+    res = cw_testimonials.set_product_details(
+        product_name, product_description, target_audience, creativity, tone_of_voice
+    )
+
+    return jsonify({"message": "Testimonial section updated", "data": res})
 
 
 if __name__ == '__main__':
@@ -298,3 +394,92 @@ if __name__ == '__main__':
     # Fetch and print the updated details using a GET request
     get_response = requests.get(url)
     print("Updated Headline Details:", get_response.json())
+    
+    
+    # API endpoint for sending data to the hero route
+    url = "http://127.0.0.1:5000/hero"
+    response = requests.post(url, json={
+        "company_name": company_name,
+        "company_description": company_description,
+        "company_type": company_type,
+        "target_audience": audience,
+        "creativity": creativity,
+        "tone_of_voice": tone_of_voice
+    })
+
+    # Print the response from Flask
+    print("Response from hero:", response.json())
+
+    # Fetch and print the updated details using a GET request
+    get_response = requests.get(url)
+    print("Updated Hero Section Details:", get_response.json())
+    
+    
+    # API endpoint for sending data to the howitworks route
+    url = "http://127.0.0.1:5000/howitworks"
+    response = requests.post(url, json={
+        "product_name": product_name,
+        "product_description": product_description,
+        "target_audience": audience,
+        "creativity": creativity,
+        "tone_of_voice": tone_of_voice
+    })
+
+    # Print the response from Flask
+    print("Response from howitworks:", response.json())
+
+    # Fetch and print the updated details using a GET request
+    get_response = requests.get(url)
+    print("Updated How It Works Section Details:", get_response.json())
+    
+    
+    # Send data to the Flask route
+    url = "http://127.0.0.1:5000/navigation"
+    response = requests.post(url, json={
+        "company_name": company_name,
+        "company_type": company_type,
+        "product_name": product_name,
+        "product_description": product_description,
+        "creativity": creativity,
+        "tone_of_voice": tone_of_voice
+    })
+
+    print(response.json())  # Print the response from Flask
+
+    # Fetch and print the updated details
+    get_response = requests.get(url)
+    print("Updated Navigation Details:", get_response.json())
+
+
+    # Send data to the Flask route
+    url = "http://127.0.0.1:5000/subheader"
+    response = requests.post(url, json={
+        "product_name": product_name,
+        "product_description": product_description,
+        "target_audience": audience,
+        "creativity": creativity,
+        "tone_of_voice": tone_of_voice
+    })
+
+    print(response.json())  # Print the response from Flask
+
+    # Fetch and print the updated details
+    get_response = requests.get(url)
+    print("Updated Subheader Details:", get_response.json())
+
+
+    # Send data to the Flask route
+    url = "http://127.0.0.1:5000/testimonial"
+    response = requests.post(url, json={
+        "product_name": product_name,
+        "product_description": product_description,
+        "target_audience": audience,
+        "creativity": creativity,
+        "tone_of_voice": tone_of_voice
+    })
+
+    print(response.json())  # Print the response from Flask
+
+    # Fetch and print the updated details
+    get_response = requests.get(url)
+    print("Updated Testimonial Details:", get_response.json())
