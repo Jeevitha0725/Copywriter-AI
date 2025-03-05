@@ -15,38 +15,12 @@ const HowItWorksSection = ({ title, description, services, onUpdate }) => {
     onUpdate?.(newContent);
   };
 
-  const handleGenerate = async (sectionType, formData) => {
+  const handleGenerate = async (sectionType, generatedContent) => {
     try {
-      // TODO: Implement API call to generate content
-      // const response = await generateSectionContent(sectionType, formData);
-      // const newContent = response.data;
-      // setContent(newContent);
-      // onUpdate?.(newContent);
-      
-      // Temporary mock data
-      const mockResponse = {
-        title: "How It Works",
-        description: "Our simple three-step process to transform your content strategy",
-        services: [
-          {
-            title: "Input Your Requirements",
-            description: "Tell us about your business, target audience, and content goals"
-          },
-          {
-            title: "AI Analysis & Generation",
-            description: "Our AI analyzes your needs and generates optimized content"
-          },
-          {
-            title: "Review & Launch",
-            description: "Review the generated content and launch your new strategy"
-          }
-        ]
-      };
-      
-      setContent(mockResponse);
-      onUpdate?.(mockResponse);
+      setContent(generatedContent);
+      onUpdate?.(generatedContent);
     } catch (error) {
-      console.error('Error generating content:', error);
+      console.error('Error updating content:', error);
       throw error;
     }
   };

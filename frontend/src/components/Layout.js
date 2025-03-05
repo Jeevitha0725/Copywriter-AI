@@ -1,15 +1,22 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import Link from 'next/link';
+import React, { useState } from "react";
+import { useRouter } from "next/router";
+import Link from "next/link";
 
 const Sidebar = () => {
   const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  
+
   const links = [
     { path: "/", label: "Home", icon: "🏠" },
     { path: "/dashboard", label: "Dashboard", icon: "📊" },
     { path: "/landing-page-ai", label: "Landing Page AI", icon: "🤖" },
+    {
+      label: "AIDA Formula",
+      path: "/aida-formula",
+      icon: "📝",
+    },
+    { label: "Pain Agitate Solution", path: "/pas-formula", icon: "📝" },
+    { label: "Quest Formula", path: "/quest-formula", icon: "📝" },
   ];
 
   return (
@@ -25,9 +32,9 @@ const Sidebar = () => {
       </div>
 
       {/* Sidebar */}
-      <div 
+      <div
         className={`
-          ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} 
+          ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"} 
           lg:translate-x-0 transition-transform duration-300 
           w-64 bg-background/80 backdrop-blur-md h-screen fixed left-0 top-0 
           border-r border-foreground/10 z-40 glass-effect
@@ -35,7 +42,10 @@ const Sidebar = () => {
       >
         <div className="p-6">
           <div className="text-2xl font-bold animate-fade-in">
-            <Link href="/" className="gradient-text hover:opacity-80 transition-all duration-300">
+            <Link
+              href="/"
+              className="gradient-text hover:opacity-80 transition-all duration-300"
+            >
               Copywriter AI
             </Link>
           </div>
@@ -49,9 +59,11 @@ const Sidebar = () => {
                 flex items-center px-6 py-3 text-foreground-light
                 hover:text-foreground hover:bg-foreground/5
                 transition-all duration-300 hover:scale-[1.02] transform
-                ${router.pathname === link.path
-                  ? "bg-primary/10 text-primary border-r-4 border-primary"
-                  : ""}
+                ${
+                  router.pathname === link.path
+                    ? "bg-primary/10 text-primary border-r-4 border-primary"
+                    : ""
+                }
               `}
               onClick={() => setIsMobileMenuOpen(false)}
               style={{ animationDelay: `${index * 0.1}s` }}
@@ -68,7 +80,7 @@ const Sidebar = () => {
 
       {/* Backdrop for mobile menu */}
       {isMobileMenuOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-foreground/20 backdrop-blur-sm z-30 lg:hidden"
           onClick={() => setIsMobileMenuOpen(false)}
         />
@@ -85,14 +97,12 @@ const Layout = ({ children }) => {
         {/* Background decorative elements */}
         <div className="fixed inset-0 bg-[radial-gradient(circle_at_top_right,_var(--primary-light)_0%,_transparent_40%)] opacity-10" />
         <div className="fixed inset-0 bg-[radial-gradient(circle_at_bottom_left,_var(--secondary-light)_0%,_transparent_40%)] opacity-10" />
-        
+
         {/* Content */}
-        <div className="relative">
-          {children}
-        </div>
+        <div className="relative">{children}</div>
       </div>
     </div>
   );
 };
 
-export default Layout; 
+export default Layout;

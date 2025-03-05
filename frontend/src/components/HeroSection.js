@@ -6,24 +6,17 @@ const HeroSection = ({ title, description, onUpdate }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [content, setContent] = useState({ title, description });
 
-  const handleGenerate = async (sectionType, formData) => {
+  const handleGenerate = async (sectionType, generatedContent) => {
     try {
-      // TODO: Implement API call to generate content
-      // const response = await generateSectionContent(sectionType, formData);
-      // const newContent = response.data;
-      // setContent(newContent);
-      // onUpdate?.(newContent);
+      // Update local state with the generated content
+      setContent(generatedContent);
       
-      // Temporary mock data
-      const mockResponse = {
-        title: "Transform Your Business with AI-Powered Solutions",
-        description: "Unlock the full potential of your business with our cutting-edge AI technology. Streamline operations, boost productivity, and drive growth with intelligent automation."
-      };
-      
-      setContent(mockResponse);
-      onUpdate?.(mockResponse);
+      // Notify parent component of the update
+      if (onUpdate) {
+        onUpdate(generatedContent);
+      }
     } catch (error) {
-      console.error('Error generating content:', error);
+      console.error('Error updating content:', error);
       throw error;
     }
   };
