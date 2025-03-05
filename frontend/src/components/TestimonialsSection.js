@@ -2,13 +2,9 @@ import React, { useState } from 'react';
 import EditDialog from './EditDialog';
 import GenerateButton from './GenerateButton';
 
-const TestimonialsSection = ({ testimonials, onUpdate }) => {
+const TestimonialsSection = ({ title, description, testimonialLists, onUpdate }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [content, setContent] = useState(testimonials || {
-    title: '',
-    description: '',
-    testimonialLists: []
-  });
+  const [content, setContent] = useState({ title, description, testimonialLists });
 
   const handleEdit = (key, value) => {
     const newContent = {
@@ -40,41 +36,12 @@ const TestimonialsSection = ({ testimonials, onUpdate }) => {
     }
   };
 
-  const handleGenerate = async (sectionType, formData) => {
+  const handleGenerate = async (sectionType, generatedContent) => {
     try {
-      // TODO: Implement API call to generate content
-      // const response = await generateSectionContent(sectionType, formData);
-      // const newContent = response.data;
-      // setContent(newContent);
-      // onUpdate?.(newContent);
-      
-      // Temporary mock data
-      const mockResponse = {
-        title: "What Our Clients Say",
-        description: "Discover how we've helped businesses transform their digital presence",
-        testimonialLists: [
-          {
-            comment: "The AI-powered content generation has revolutionized our marketing strategy. We've seen a 200% increase in engagement!",
-            user: "Sarah Johnson",
-            company: "TechStart Inc."
-          },
-          {
-            comment: "This platform has saved us countless hours in content creation. The quality and consistency are outstanding.",
-            user: "Michael Chen",
-            company: "Digital Solutions"
-          },
-          {
-            comment: "The best investment we've made in our content strategy. The results speak for themselves.",
-            user: "Emma Davis",
-            company: "Growth Marketing"
-          }
-        ]
-      };
-      
-      setContent(mockResponse);
-      onUpdate?.(mockResponse);
+      setContent(generatedContent);
+      onUpdate?.(generatedContent);
     } catch (error) {
-      console.error('Error generating content:', error);
+      console.error('Error updating content:', error);
       throw error;
     }
   };

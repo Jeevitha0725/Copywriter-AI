@@ -6,29 +6,12 @@ const FeaturesSection = ({ features, onUpdate }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [content, setContent] = useState({ features });
 
-  const handleGenerate = async (sectionType, formData) => {
+  const handleGenerate = async (sectionType, generatedContent) => {
     try {
-      // TODO: Implement API call to generate content
-      // const response = await generateSectionContent(sectionType, formData);
-      // const newContent = response.data;
-      // setContent(newContent);
-      // onUpdate?.(newContent);
-      
-      // Temporary mock data
-      const mockResponse = {
-        features: [
-          "AI-Powered Content Generation",
-          "Smart SEO Optimization",
-          "Multi-language Support",
-          "Real-time Analytics",
-          "Custom Branding Options"
-        ]
-      };
-      
-      setContent(mockResponse);
-      onUpdate?.(mockResponse);
+      setContent(generatedContent);
+      onUpdate?.(generatedContent);
     } catch (error) {
-      console.error('Error generating content:', error);
+      console.error('Error updating content:', error);
       throw error;
     }
   };

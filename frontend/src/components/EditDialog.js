@@ -22,10 +22,10 @@ const EditDialog = ({ isOpen, onClose, sectionType, onGenerate }) => {
     setIsGenerating(true);
     try {
       // Generate content based on section type
-      const generatedContent = await generateContent(sectionType, formData);
+      const response = await generateContent(sectionType, formData);
       
       // Format the content based on section type
-      const formattedContent = formatContent(sectionType, generatedContent);
+      const formattedContent = formatContent(sectionType, response.data);
       
       // Pass the formatted content to the parent component
       await onGenerate(sectionType, formattedContent);
@@ -42,7 +42,7 @@ const EditDialog = ({ isOpen, onClose, sectionType, onGenerate }) => {
     try {
       const apiConfig = getApiConfig(sectionType, formData);
       const response = await axios(apiConfig);
-      return response.data;
+      return response;
     } catch (error) {
       console.error('Error generating content:', error);
       throw error;
@@ -63,7 +63,7 @@ const EditDialog = ({ isOpen, onClose, sectionType, onGenerate }) => {
       case 'hero':
         return {
           ...baseConfig,
-          url: '/hero',
+          url: 'http://127.0.0.1:5000/hero',
           data: {
             company_name: formData.companyName,
             company_description: formData.companyDescription,
@@ -77,7 +77,7 @@ const EditDialog = ({ isOpen, onClose, sectionType, onGenerate }) => {
       case 'about':
         return {
           ...baseConfig,
-          url: '/aboutus_tool',
+          url: 'http://127.0.0.1:5000/aboutus_tool',
           data: {
             product_name: formData.productName,
             product_description: formData.productDescription,
@@ -90,7 +90,7 @@ const EditDialog = ({ isOpen, onClose, sectionType, onGenerate }) => {
       case 'features':
         return {
           ...baseConfig,
-          url: '/features',
+          url: 'http://127.0.0.1:5000/features',
           data: {
             company_name: formData.companyName,
             company_description: formData.companyDescription,
@@ -105,7 +105,7 @@ const EditDialog = ({ isOpen, onClose, sectionType, onGenerate }) => {
       case 'testimonials':
         return {
           ...baseConfig,
-          url: '/testimonial',
+          url: 'http://127.0.0.1:5000/testimonial',
           data: {
             product_name: formData.productName,
             product_description: formData.productDescription,
@@ -118,7 +118,7 @@ const EditDialog = ({ isOpen, onClose, sectionType, onGenerate }) => {
       case 'howItWorks':
         return {
           ...baseConfig,
-          url: '/howitworks',
+          url: 'http://127.0.0.1:5000/howitworks',
           data: {
             product_name: formData.productName,
             product_description: formData.productDescription,
@@ -138,7 +138,7 @@ const EditDialog = ({ isOpen, onClose, sectionType, onGenerate }) => {
     switch (sectionType) {
       case 'hero':
         return {
-          title: content.title,
+          title: content.title || content.headline,
           description: content.description
         };
       case 'about':
@@ -148,19 +148,19 @@ const EditDialog = ({ isOpen, onClose, sectionType, onGenerate }) => {
         };
       case 'features':
         return {
-          features: content.features
+          features: content.features || []
         };
       case 'testimonials':
         return {
           title: content.title,
           description: content.description,
-          testimonialLists: content.testimonialLists
+          testimonialLists: content.testimonialLists || []
         };
       case 'howItWorks':
         return {
           title: content.title,
           description: content.description,
-          services: content.services
+          services: content.services || []
         };
       default:
         return content;
