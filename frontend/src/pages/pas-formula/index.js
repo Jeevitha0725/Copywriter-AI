@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Layout from '../../components/Layout';
+import ReactMarkdown from 'react-markdown';
 
 const PasFormula = () => {
   const [formData, setFormData] = useState({
@@ -205,8 +206,8 @@ const PasFormula = () => {
                 }`}
                 onClick={() => setIsSelected(!isSelected)}
               >
-                <div className="whitespace-pre-wrap text-gray-900">
-                  {generatedContent}
+                <div className="prose prose-sm max-w-none text-gray-900">
+                  <ReactMarkdown>{generatedContent}</ReactMarkdown>
                 </div>
               </div>
             ) : (

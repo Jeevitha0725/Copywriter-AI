@@ -1,5 +1,6 @@
 import Layout from "@/components/Layout";
-import React from "react";
+import { useRouter } from "next/navigation";
+import React, { useEffect } from "react";
 
 const Home = () => {
   return (
@@ -15,16 +16,21 @@ const Home = () => {
           <div className="p-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div className="card-modern hover-scale">
-                <h3 className="text-lg font-semibold text-foreground">Quick Start</h3>
+                <h3 className="text-lg font-semibold text-foreground">
+                  Quick Start
+                </h3>
                 <p className="mt-2 text-foreground-light">
-                  Learn how to get started with Syncner and create your first design.
+                  Learn how to get started with Syncner and create your first
+                  design.
                 </p>
                 <button className="btn-primary mt-4 w-full sm:w-auto">
                   View Guide
                 </button>
               </div>
               <div className="card-modern hover-scale">
-                <h3 className="text-lg font-semibold text-foreground">Recent Designs</h3>
+                <h3 className="text-lg font-semibold text-foreground">
+                  Recent Designs
+                </h3>
                 <p className="mt-2 text-foreground-light">
                   Continue working on your recent designs.
                 </p>
