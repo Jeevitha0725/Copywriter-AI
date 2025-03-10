@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@tailwindcss/typography": "^0.5.16",
     "autoprefixer": "^10.4.20",
     "axios": "^1.8.1",
     "next": "15.1.7",
@@ -16,6 +17,7 @@
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^19.0.0",
+    "react-markdown": "^10.0.1",
     "react-router-dom": "^7.2.0"
   },
   "devDependencies": {
