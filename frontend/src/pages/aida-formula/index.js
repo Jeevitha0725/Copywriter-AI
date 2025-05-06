@@ -37,7 +37,7 @@ const AidaFormula = () => {
         tone_of_voice: formData.tone
       };
 
-      const response = await fetch('http://127.0.0.1:5000/aida', {
+      const response = await fetch('https://copyright-backend.onrender.com/aida', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

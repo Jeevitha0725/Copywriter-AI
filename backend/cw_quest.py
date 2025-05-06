@@ -1,14 +1,17 @@
 import os
 from crewai import Agent, Task, Crew, LLM
 from crewai.tools import tool
+from dotenv import load_dotenv
 
-# Set API Key for LLM
-os.environ["GEMINI_API_KEY"] = "AIzaSyBPuJyHX0rcQV7DneUbAvgJT0BUobRwCS4"
+load_dotenv()
+
+api_key = os.getenv("LLM_API_KEY")
+model_name = os.getenv("LLM_MODEL_NAME")
 
 # Define LLM
 my_llm = LLM(
-    model='gemini/gemini-1.5-flash',
-    api_key=os.environ["GEMINI_API_KEY"]
+    model=model_name,
+    api_key=api_key
 )
 
 # Define the Agents

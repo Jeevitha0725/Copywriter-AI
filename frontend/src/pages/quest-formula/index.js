@@ -37,7 +37,7 @@ const QuestFormula = () => {
         language: formData.language
       };
 
-      const response = await fetch('http://127.0.0.1:5000/quest', {
+      const response = await fetch('https://copyright-backend.onrender.com/quest', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
