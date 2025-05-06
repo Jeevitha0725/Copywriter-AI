@@ -2,22 +2,19 @@ import os
 from crewai import Agent, Task, Crew
 from langchain_groq import ChatGroq
 import json
+from dotenv import load_dotenv
 
-# Set the API key
-os.environ["GROQ_API_KEY"] = "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"
+load_dotenv()
 
-os.environ["OTEL_SDK_DISABLED"] = "true"
-
-
-# Retrieve API key
-api_key = os.getenv("GROQ_API_KEY")
+api_key = os.getenv("CHAT_API_KEY")
+model_name = os.getenv("CHAT_MODEL_NAME")
 if not api_key:
     raise ValueError("API Key is missing. Set GROQ_API_KEY as an environment variable.")
 
 # Initialize the model
 llm = ChatGroq(
     temperature=1,
-    model="groq/llama3-70b-8192",
+    model=model_name,
     api_key=api_key
 )
 
