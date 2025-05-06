@@ -213,7 +213,13 @@ const Index = () => {
         selected_sections: selectedSections.map((section) => section.id),
       };
 
-      const response = await axios.post('/api/landing_page', requestBody);
+      const response = await fetch('https://copyright-backend.onrender.com/landing_page', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody),
+      })
 
       // let d = {
       //   data: {
@@ -351,10 +357,9 @@ const Index = () => {
       //   },
       // };
 
-      // if (response.data && response.data.data) {
-      console.log("response.data.data", response.data.data)
-      // setData(d.data);
-      setData(response.data.data);
+      const responseData = await response.json();
+      console.log("response.data.data", responseData.data);
+      setData(responseData.data);
       setShowForm(false);
       // }
     } catch (error) {
